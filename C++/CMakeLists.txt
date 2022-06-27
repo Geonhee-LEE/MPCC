@@ -62,8 +62,8 @@ add_executable(MPCC
         MPC/mpc.cpp
         Params/track.cpp
         Params/track.h
-        #Plotting/plotting.cpp
-        #Plotting/plotting.h
+        Plotting/plotting.cpp
+        Plotting/plotting.h
         )
 
 #find_package(Python COMPONENTS Development)

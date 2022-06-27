@@ -25,7 +25,7 @@
 #include "MPC/mpc.h"
 #include "Model/integrator.h"
 #include "Params/track.h"
-//#include "Plotting/plotting.h"
+#include "Plotting/plotting.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     std::cout << testCost(json_paths) << std::endl;
 
     Integrator integrator = Integrator(jsonConfig["Ts"],json_paths);
-    //Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);
+    Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);
 
     Track track = Track(json_paths.track_path);
     TrackPos track_xy = track.getTrack();
@@ -76,8 +76,8 @@ int main(int argc, char** argv)
         x0 = integrator.simTimeStep(x0,mpc_sol.u0,jsonConfig["Ts"]);
         log.push_back(mpc_sol);
     }
-    //plotter.plotRun(log,track_xy);
-    //plotter.plotSim(log,track_xy);
+    plotter.plotRun(log,track_xy);
+    plotter.plotSim(log,track_xy);
 
     double mean_time = 0.0;
     double max_time = 0.0;

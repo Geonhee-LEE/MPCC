@@ -6,6 +6,7 @@ project(model_predictive_contouring_control)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  roslib
 )
 
 find_package(PythonLibs REQUIRED)

@@ -15,6 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include <ros/ros.h>
+#include <ros/package.h>
 
 #include "Tests/spline_test.h"
 #include "Tests/model_integrator_test.h"
@@ -34,7 +35,9 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "MPCC");
     using namespace mpcc;
-    std::ifstream iConfig("Params/config.json");
+
+    std::string const package_path = ros::package::getPath("model_predictive_contouring_control");
+    std::ifstream iConfig(package_path + "/Params/config.json");
     json jsonConfig;
     iConfig >> jsonConfig;
 
@@ -44,17 +47,17 @@ int main(int argc, char** argv)
                            jsonConfig["track_path"],
                            jsonConfig["normalization_path"]};
 
-    // std::cout << testSpline() << std::endl;
-    // std::cout << testArcLengthSpline(json_paths) << std::endl;
+    std::cout << testSpline() << std::endl;
+    std::cout << testArcLengthSpline(json_paths) << std::endl;
 
-    // std::cout << testIntegrator(json_paths) << std::endl;
-    // std::cout << testLinModel(json_paths) << std::endl;
+    std::cout << testIntegrator(json_paths) << std::endl;
+    std::cout << testLinModel(json_paths) << std::endl;
 
-    // std::cout << testAlphaConstraint(json_paths) << std::endl;
-    // std::cout << testTireForceConstraint(json_paths) << std::endl;
-    // std::cout << testTrackConstraint(json_paths) << std::endl;
+    std::cout << testAlphaConstraint(json_paths) << std::endl;
+    std::cout << testTireForceConstraint(json_paths) << std::endl;
+    std::cout << testTrackConstraint(json_paths) << std::endl;
 
-    // std::cout << testCost(json_paths) << std::endl;
+    std::cout << testCost(json_paths) << std::endl;
 
     Integrator integrator = Integrator(jsonConfig["Ts"],json_paths);
     //Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);

@@ -24,7 +24,7 @@
 #include <matplotlibcpp.h>
 #include <vector>
 #include <MPC/mpc.h>
-#include <Model/model.h>
+#include <Model/bicycle_model.h>
 
 namespace plt = matplotlibcpp;
 
@@ -39,7 +39,7 @@ public:
 private:
     void plotBox(const State &x0) const;
 
-    Model model_;
+    BicycleModel model_;
     Param param_;
 };
 }

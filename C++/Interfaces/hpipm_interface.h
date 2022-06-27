@@ -32,7 +32,7 @@
 
 #include "config.h"
 #include "types.h"
-#include "Model/model.h"
+#include "Model/bicycle_model.h"
 #include "Cost/cost.h"
 #include "Constraints/constraints.h"
 #include "Constraints/bounds.h"

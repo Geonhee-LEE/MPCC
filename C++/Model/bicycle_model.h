@@ -14,8 +14,8 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef MPCC_MODEL_H
-#define MPCC_MODEL_H
+#ifndef MPCC_BICYCLE_MODEL_H
+#define MPCC_BICYCLE_MODEL_H
 
 #include "config.h"
 #include "types.h"
@@ -60,7 +60,7 @@ struct FrictionForceDerivatives {
     const double dF_f_delta;
 };
 
-class Model {
+class BicycleModel {
 public:
     double getSlipAngleFront(const State &x) const;
     double getSlipAngleRear(const State &x) const;
@@ -78,8 +78,8 @@ public:
 
     LinModelMatrix getLinModel(const State &x, const Input &u) const;
 
-    Model();
-    Model(double Ts,const PathToJson &path);
+    BicycleModel();
+    BicycleModel(double Ts,const PathToJson &path);
 private:
     LinModelMatrix getModelJacobian(const State &x, const Input &u) const;
     LinModelMatrix discretizeModel(const LinModelMatrix &lin_model_c) const;
@@ -88,4 +88,4 @@ private:
     const double Ts_;
 };
 }
-#endif //MPCC_MODEL_H
+#endif //MPCC_BICYCLE_MODEL_H

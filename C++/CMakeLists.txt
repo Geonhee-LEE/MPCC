@@ -53,7 +53,7 @@ add_executable(MPCC
         Constraints/constraints.cpp
         Constraints/bounds.cpp
         Cost/cost.cpp
-        Model/model.cpp
+        Model/bicycle_model.cpp
         Model/integrator.cpp
         Tests/spline_test.cpp
         Tests/cost_test.cpp

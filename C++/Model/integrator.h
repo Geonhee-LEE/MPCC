@@ -18,7 +18,7 @@
 #define MPCC_INTEGRATOR_H
 
 #include "config.h"
-#include "model.h"
+#include "bicycle_model.h"
 #include "types.h"
 
 namespace mpcc{
@@ -34,7 +34,7 @@ public:
 private:
     const double fine_time_step_ = 0.001;
 
-    Model model_;
+    BicycleModel model_;
 };
 }
 #endif //MPCC_INTEGRATOR_H

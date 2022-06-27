@@ -66,7 +66,7 @@ int testLinModel(const PathToJson &path){
     // 3 differnet test cases, hand picked, going straight and test how good linear model generalizes
     double Ts = 0.02;
     const Integrator integrator = Integrator(0.02,path);
-    const Model model = Model(0.02,path);
+    const BicycleModel model = BicycleModel(0.02,path);
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Hand picked x and u

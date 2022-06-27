@@ -14,32 +14,32 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#include "model.h"
+#include "bicycle_model.h"
 namespace mpcc{
-Model::Model()
+BicycleModel::BicycleModel()
 :Ts_(1.0)
 {
     std::cout << "default constructor, not everything is initialized properly" << std::endl;
 }
 
-Model::Model(double Ts,const PathToJson &path)
+BicycleModel::BicycleModel(double Ts,const PathToJson &path)
 :Ts_(Ts),param_(Param(path.param_path))
 {
 }
 
-double Model::getSlipAngleFront(const State &x) const
+double BicycleModel::getSlipAngleFront(const State &x) const
 {
     // compute slip angels given current state
     return -std::atan2(x.vy+x.r*param_.lf,x.vx) + x.delta;
 }
 
-double Model::getSlipAngleRear(const State &x) const
+double BicycleModel::getSlipAngleRear(const State &x) const
 {
     // compute slip angels given current state
     return -std::atan2(x.vy-x.r*param_.lr,x.vx);
 }
 
-TireForces Model::getForceFront(const State &x) const
+TireForces BicycleModel::getForceFront(const State &x) const
 {
     const double alpha_f = getSlipAngleFront(x);
     const double F_y = param_.Df * std::sin(param_.Cf * std::atan(param_.Bf * alpha_f ));
@@ -48,7 +48,7 @@ TireForces Model::getForceFront(const State &x) const
     return {F_y,F_x};
 }
 
-TireForces Model::getForceRear(const State &x) const
+TireForces BicycleModel::getForceRear(const State &x) const
 {
     const double alpha_r = getSlipAngleRear(x);
     const double F_y = param_.Dr * std::sin(param_.Cr * std::atan(param_.Br * alpha_r ));
@@ -57,12 +57,12 @@ TireForces Model::getForceRear(const State &x) const
     return {F_y,F_x};
 }
 
-double Model::getForceFriction(const State &x) const
+double BicycleModel::getForceFriction(const State &x) const
 {
     return -param_.Cr0 - param_.Cr2*std::pow(x.vx,2.0);
 }
 
-NormalForces Model::getForceNormal(const State &x) const
+NormalForces BicycleModel::getForceNormal(const State &x) const
 {
     // at this point aero forces could be modeled
     const double f_n_front = param_.lr/(param_.lf + param_.lr)*param_.m*param_.g;
@@ -70,7 +70,7 @@ NormalForces Model::getForceNormal(const State &x) const
     return {f_n_front,f_n_rear};
 }
 
-TireForcesDerivatives Model::getForceFrontDerivatives(const State &x) const
+TireForcesDerivatives BicycleModel::getForceFrontDerivatives(const State &x) const
 {
     const double alpha_f = getSlipAngleFront(x);
     const double vx = x.vx;
@@ -100,7 +100,7 @@ TireForcesDerivatives Model::getForceFrontDerivatives(const State &x) const
     return {dF_y_vx,dF_y_vy,dF_y_r,dF_y_D,dF_y_delta,dF_x_vx,dF_x_vy,dF_x_r,dF_x_D,dF_x_delta};
 }
 
-TireForcesDerivatives Model::getForceRearDerivatives(const State &x) const
+TireForcesDerivatives BicycleModel::getForceRearDerivatives(const State &x) const
 {
     const double alpha_r = getSlipAngleRear(x);
     const double vx = x.vx;
@@ -130,12 +130,12 @@ TireForcesDerivatives Model::getForceRearDerivatives(const State &x) const
     return {dF_y_vx,dF_y_vy,dF_y_r,dF_y_D,dF_y_delta,dF_x_vx,dF_x_vy,dF_x_r,dF_x_D,dF_x_delta};
 }
 
-FrictionForceDerivatives Model::getForceFrictionDerivatives(const State &x) const
+FrictionForceDerivatives BicycleModel::getForceFrictionDerivatives(const State &x) const
 {
     return {-2.0*param_.Cr2*x.vx,0.0,0.0,0.0,0.0};
 }
 
-StateVector Model::getF(const State &x,const Input &u) const
+StateVector BicycleModel::getF(const State &x,const Input &u) const
 {
     const double phi = x.phi;
     const double vx = x.vx;
@@ -168,7 +168,7 @@ StateVector Model::getF(const State &x,const Input &u) const
     return f;
 }
 
-LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
+LinModelMatrix BicycleModel::getModelJacobian(const State &x, const Input &u) const
 {
     // compute jacobian of the model
     // state values
@@ -277,7 +277,7 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
     return {A_c,B_c,g_c};
 }
 
-LinModelMatrix Model::discretizeModel(const LinModelMatrix &lin_model_c) const
+LinModelMatrix BicycleModel::discretizeModel(const LinModelMatrix &lin_model_c) const
 {
     // disctetize the continuous time linear model \dot x = A x + B u + g using ZHO
     Eigen::Matrix<double,NX+NU+1,NX+NU+1> temp = Eigen::Matrix<double,NX+NU+1,NX+NU+1>::Zero();
@@ -299,7 +299,7 @@ LinModelMatrix Model::discretizeModel(const LinModelMatrix &lin_model_c) const
     return {A_d,B_d,g_d};
 }
 
-//LinModelMatrix Model::discretizeModel(const LinModelMatrix &lin_model_c) const
+//LinModelMatrix BicycleModel::discretizeModel(const LinModelMatrix &lin_model_c) const
 //{
 //    // disctetize the continuous time linear model \dot x = A x + B u + g using ZHO
 //    Eigen::Matrix<double,NX+NU+1,NX+NU+1> temp = Eigen::Matrix<double,NX+NU+1,NX+NU+1>::Zero();
@@ -324,7 +324,7 @@ LinModelMatrix Model::discretizeModel(const LinModelMatrix &lin_model_c) const
 //
 //}
 
-LinModelMatrix Model::getLinModel(const State &x, const Input &u) const
+LinModelMatrix BicycleModel::getLinModel(const State &x, const Input &u) const
 {
     // compute linearized and discretized model
     const LinModelMatrix lin_model_c = getModelJacobian(x,u);

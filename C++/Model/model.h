@@ -28,7 +28,7 @@ struct LinModelMatrix {
     g_MPC g;
 };
 
-struct TireForces {
+/* struct TireForces {
     const double F_y;
     const double F_x;
 };
@@ -58,10 +58,11 @@ struct FrictionForceDerivatives {
     const double dF_f_r;
     const double dF_f_D;
     const double dF_f_delta;
-};
+}; */
 
 class Model {
 public:
+    /* 
     double getSlipAngleFront(const State &x) const;
     double getSlipAngleRear(const State &x) const;
 
@@ -72,7 +73,8 @@ public:
 
     TireForcesDerivatives getForceFrontDerivatives(const State &x) const;
     TireForcesDerivatives getForceRearDerivatives(const State &x) const;
-    FrictionForceDerivatives getForceFrictionDerivatives(const State &x) const;
+    FrictionForceDerivatives getForceFrictionDerivatives(const State &x) const; 
+    */
 
     StateVector getF(const State &x,const Input &u) const;
 

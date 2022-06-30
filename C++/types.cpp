@@ -23,19 +23,15 @@ StateVector stateToVector(const State &x)
     xk(0) = x.X;
     xk(1) = x.Y;
     xk(2) = x.phi;
-    xk(3) = x.vx;
-    xk(4) = x.vy;
-    xk(5) = x.r;
-    xk(6) = x.s;
-    xk(7) = x.D;
-    xk(8) = x.delta;
-    xk(9) = x.vs;
+    xk(3) = x.s;
+    xk(4) = x.vx;
+    xk(5) = x.vs;
     return xk;
 }
 
 InputVector inputToVector(const Input &u)
 {
-    InputVector uk = {u.dD,u.dDelta,u.dVs};
+    InputVector uk = {u.dVx, u.dPhi, u.dVs};
     return uk;
 }
 
@@ -45,13 +41,9 @@ State vectorToState(const StateVector &xk)
     x.X     = xk(0);
     x.Y     = xk(1);
     x.phi   = xk(2);
-    x.vx    = xk(3);
-    x.vy    = xk(4);
-    x.r     = xk(5);
-    x.s     = xk(6);
-    x.D     = xk(7);
-    x.delta = xk(8);
-    x.vs    = xk(9);
+    x.s     = xk(3);
+    x.vx    = xk(4);
+    x.vs    = xk(5);
 
     return x;
 }
@@ -59,8 +51,8 @@ State vectorToState(const StateVector &xk)
 Input vectorToInput(const InputVector &uk)
 {
     Input u;
-    u.dD     = uk(0);
-    u.dDelta = uk(1);
+    u.dVx     = uk(0);
+    u.dPhi = uk(1);
     u.dVs    = uk(2);
 
     return u;
@@ -72,13 +64,9 @@ State arrayToState(double *xk)
     x.X     = xk[0];
     x.Y     = xk[1];
     x.phi   = xk[2];
-    x.vx    = xk[3];
-    x.vy    = xk[4];
-    x.r     = xk[5];
-    x.s     = xk[6];
-    x.D     = xk[7];
-    x.delta = xk[8];
-    x.vs    = xk[9];
+    x.s     = xk[3];
+    x.vx    = xk[4];
+    x.vs    = xk[5];
 
     return x;
 }
@@ -86,9 +74,9 @@ State arrayToState(double *xk)
 Input arrayToInput(double *uk)
 {
     Input u;
-    u.dD     = uk[0];
-    u.dDelta = uk[1];
-    u.dVs    = uk[2];
+    u.dVx   = uk[0];
+    u.dPhi  = uk[1];
+    u.dVs   = uk[2];
 
     return u;
 }

@@ -27,7 +27,8 @@ int testIntegrator(const PathToJson &path){
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Hand picked x and u
     StateVector error1;
-    State xk1 = {0,0,0,2,0.1,-0.3,0.1,0.2,-0.1,2};
+    //State xk1 = {0,0,0,2,0.1,-0.3,0.1,0.2,-0.1,2};
+    State xk1 = {0,0,0,0,0.0};
     Input uk1 = {0.2,-0.1,0};
 
     error1 = stateToVector(integrator.EF(xk1,uk1,Ts)) - stateToVector(integrator.RK4(xk1,uk1,Ts));
@@ -35,7 +36,7 @@ int testIntegrator(const PathToJson &path){
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // x and u corresponding to going straight with 1m/s
     StateVector error2;
-    State xk2 = {0,0,0,1,0,0,0,0,0,0};
+    State xk2 = {0,0,0,1,0,0};
     Input uk2 ={0,0,0};
 
     error2 = stateToVector(integrator.EF(xk2,uk2,Ts)) - stateToVector(integrator.RK4(xk2,uk2,Ts));
@@ -71,7 +72,7 @@ int testLinModel(const PathToJson &path){
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Hand picked x and u
     StateVector error1;
-    State xk1 = {0,0,0,2,0.1,-0.3,0.1,0.2,-0.1,2};
+    State xk1 = {0,0,0,2,0.1,-0.3};
     Input uk1 = {0.2,-0.1,0};
     StateVector xk1_vec = stateToVector(xk1);
     InputVector uk1_vec = inputToVector(uk1);
@@ -83,7 +84,7 @@ int testLinModel(const PathToJson &path){
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // x and u corresponding to going straight with 1m/s
     StateVector error2;
-    State xk2 = {0,0,0,1,0,0,0,0,0,0};
+    State xk2 = {0,0,0,1,0,0};
     Input uk2 = {0,0,0};
     StateVector xk2_vec = stateToVector(xk2);
     InputVector uk2_vec = inputToVector(uk2);
@@ -100,11 +101,11 @@ int testLinModel(const PathToJson &path){
     // xk3 is slightly perturbed version of xk1
     xk3 = xk1;
     xk3.vx += 0.2;  //vx
-    xk3.vy += 0.05; //vy
-    xk3.r += 0.8;  //r
+    //xk3.vy += 0.05; //vy
+    //xk3.r += 0.8;  //r
 
-    xk3.D += 0.2;  //D
-    xk3.delta -= 0.05; //delta
+    //xk3.D += 0.2;  //D
+    xk3.phi -= 0.05; //delta
 
     Input uk3;
     uk3 = uk1;

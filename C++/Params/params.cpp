@@ -132,7 +132,7 @@ BoundsParam::BoundsParam(std::string file) {
     iBounds >> jsonBounds;
 
     lower_state_bounds.X_l = jsonBounds["Xl"];
-    lower_state_bounds.Y_l = jsonBounds["Yl"];
+    //lower_state_bounds.Y_l = jsonBounds["Yl"];
     lower_state_bounds.phi_l = jsonBounds["phil"];
     lower_state_bounds.vx_l = jsonBounds["vxl"];
     lower_state_bounds.vy_l = jsonBounds["vyl"];
@@ -178,16 +178,16 @@ NormalizationParam::NormalizationParam(std::string file)
     iNorm >> jsonNorm;
 
     T_x.setIdentity();
-    T_x(si_index.X,si_index.X) = jsonNorm["X"];
-    T_x(si_index.Y,si_index.Y) = jsonNorm["Y"];
-    T_x(si_index.phi,si_index.phi) = jsonNorm["phi"];
-    T_x(si_index.vx,si_index.vx) = jsonNorm["vx"];
-    T_x(si_index.vy,si_index.vy) = jsonNorm["vy"];
-    T_x(si_index.r,si_index.r) = jsonNorm["r"];
-    T_x(si_index.s,si_index.s) = jsonNorm["s"];
-    T_x(si_index.D,si_index.D) = jsonNorm["D"];
-    T_x(si_index.delta,si_index.delta) = jsonNorm["delta"];
-    T_x(si_index.vs,si_index.vs) = jsonNorm["vs"];
+    T_x(si_index.X, si_index.X) = jsonNorm["X"];
+    T_x(si_index.Y, si_index.Y) = jsonNorm["Y"];
+    T_x(si_index.phi, si_index.phi) = jsonNorm["phi"];
+    //T_x(si_index.vy,si_index.vy) = jsonNorm["vy"];
+    //T_x(si_index.r,si_index.r) = jsonNorm["r"];
+    T_x(si_index.s, si_index.s) = jsonNorm["s"];
+    T_x(si_index.vx, si_index.vx) = jsonNorm["vx"];
+    //T_x(si_index.D,si_index.D) = jsonNorm["D"];
+    //T_x(si_index.delta,si_index.delta) = jsonNorm["delta"];
+    T_x(si_index.vs, si_index.vs) = jsonNorm["vs"];
 
 
     T_x_inv.setIdentity();
@@ -197,9 +197,9 @@ NormalizationParam::NormalizationParam(std::string file)
     }
 
     T_u.setIdentity();
-    T_u(si_index.dD,si_index.dD) = jsonNorm["dD"];
-    T_u(si_index.dDelta,si_index.dDelta) = jsonNorm["dDelta"];
-    T_u(si_index.dVs,si_index.dVs) = jsonNorm["dVs"];
+    T_u(si_index.dVx, si_index.dVx) = jsonNorm["dVx"];
+    T_u(si_index.dPhi, si_index.dPhi) = jsonNorm["dPhi"];
+    T_u(si_index.dVs, si_index.dVs) = jsonNorm["dVs"];
 
     T_u_inv.setIdentity();
     for(int i = 0;i<NU;i++)

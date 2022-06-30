@@ -191,17 +191,17 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
 
     // Derivatives of function
     // f1 = v_x*std::cos(phi)
-    const double df1_dphi = -vx*std::sin(phi)
+    const double df1_dphi = -vx*std::sin(phi);
     const double df1_dvx  = std::cos(phi);
 
     // f2 = v_x*std::sin(phi);
-    const double df2_dphi = vx*std::cos(phi)
+    const double df2_dphi = vx*std::cos(phi);
     const double df2_dvx  = std::sin(phi);
 
     // f3 = delta phi;
 
     // f4 = s
-    const double df4_dvs  = 1
+    const double df4_dvs  = 1;
 
     // f5 = delta vx
 
@@ -219,8 +219,8 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
     // Column 4
     // all zero
     // Column 5
-    A_c(0,4) = df2_dvx;
-    A_c(1,4) = df2_dvy;
+    A_c(0,4) = df1_dvx;
+    A_c(1,4) = df2_dvx;
     // Column 6
     A_c(3,5) = df4_dvs;
 

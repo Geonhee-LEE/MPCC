@@ -54,6 +54,7 @@ OneDConstraint Constraints::getTrackConstraints(const ArcLengthSpline &track,con
     return {C_track_constraint,track_constraint_lower,track_constraint_upper};
 }
 
+/*
 OneDConstraint Constraints::getTireConstraintRear(const State &x) const
 {
     // compute tire friction elipse constraints
@@ -155,6 +156,7 @@ C_i_MPC Constraints::getAlphaConstraintFrontJac(const State &x) const
     return Jac_alphaCon;
 
 }
+*/
 
 ConstrainsMatrix Constraints::getConstraints(const ArcLengthSpline &track,const State &x,const Input &u) const
 {
@@ -163,8 +165,8 @@ ConstrainsMatrix Constraints::getConstraints(const ArcLengthSpline &track,const 
 
     ConstrainsMatrix constrains_matrix;
     const OneDConstraint track_constraints = getTrackConstraints(track,x);
-    const OneDConstraint tire_constraints_rear = getTireConstraintRear(x);
-    const OneDConstraint alpha_constraints_front = getAlphaConstraintFront(x);
+    //const OneDConstraint tire_constraints_rear = getTireConstraintRear(x);
+    //const OneDConstraint alpha_constraints_front = getAlphaConstraintFront(x);
 
     C_MPC C_constrains_matrix;
     d_MPC dl_constrains_matrix;
@@ -174,13 +176,13 @@ ConstrainsMatrix Constraints::getConstraints(const ArcLengthSpline &track,const 
     dl_constrains_matrix(si_index.con_track) = track_constraints.dl_i;
     du_constrains_matrix(si_index.con_track) = track_constraints.du_i;
 
-    C_constrains_matrix.row(si_index.con_tire) = tire_constraints_rear.C_i;
-    dl_constrains_matrix(si_index.con_tire) = tire_constraints_rear.dl_i;
-    du_constrains_matrix(si_index.con_tire) = tire_constraints_rear.du_i;
+    //C_constrains_matrix.row(si_index.con_tire) = tire_constraints_rear.C_i;
+    //dl_constrains_matrix(si_index.con_tire) = tire_constraints_rear.dl_i;
+    //du_constrains_matrix(si_index.con_tire) = tire_constraints_rear.du_i;
 
-    C_constrains_matrix.row(si_index.con_alpha) = alpha_constraints_front.C_i;
-    dl_constrains_matrix(si_index.con_alpha) = alpha_constraints_front.dl_i;
-    du_constrains_matrix(si_index.con_alpha) = alpha_constraints_front.du_i;
+    //C_constrains_matrix.row(si_index.con_alpha) = alpha_constraints_front.C_i;
+    //dl_constrains_matrix(si_index.con_alpha) = alpha_constraints_front.dl_i;
+    //du_constrains_matrix(si_index.con_alpha) = alpha_constraints_front.du_i;
 
     return {C_constrains_matrix,D_MPC::Zero(),dl_constrains_matrix,du_constrains_matrix};
 }

@@ -67,7 +67,7 @@ void genRoundTrack(ArcLengthSpline &track){
 //    plt::show();
 
 }
-
+/*
 int testAlphaConstraint(const PathToJson &path){
     Constraints constraints = Constraints(0.02,path);
     ArcLengthSpline track = ArcLengthSpline(path);
@@ -171,7 +171,7 @@ int testTireForceConstraint(const PathToJson &path) {
 
     return  1;
 }
-
+*/
 
 int testTrackConstraint(const PathToJson &path) {
     Constraints constraints = Constraints(0.02,path);

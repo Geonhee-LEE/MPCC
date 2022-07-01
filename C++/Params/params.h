@@ -30,7 +30,7 @@ using json = nlohmann::json;
 
 class Param{
 public:
-    double Cm1;
+    /* double Cm1;
     double Cm2;
     double Cr0;
     double Cr2;
@@ -48,10 +48,10 @@ public:
     double lf;
     double lr;
 
+    double g; */
+
     double car_l;
     double car_w;
-
-    double g;
 
     double r_in;
     double r_out;
@@ -61,7 +61,7 @@ public:
     double e_long;
     double e_eps;
 
-    double max_alpha;
+    //double max_alpha;
 
     double initial_velocity;
     double s_trust_region;
@@ -117,11 +117,7 @@ public:
         double Y_l;
         double phi_l;
         double vx_l;
-        double vy_l;
-        double r_l;
         double s_l;
-        double D_l;
-        double delta_l;
         double vs_l;
     };
     struct UpperStateBounds{
@@ -129,22 +125,18 @@ public:
         double Y_u;
         double phi_u;
         double vx_u;
-        double vy_u;
-        double r_u;
         double s_u;
-        double D_u;
-        double delta_u;
         double vs_u;
     };
     struct LowerInputBounds{
-        double dD_l;
-        double dDelta_l;
-        double dVs_l;
+        double dVxl;
+        double dPhil;
+        double dVsl;
     };
     struct UpperInputBounds{
-        double dD_u;
-        double dDelta_u;
-        double dVs_u;
+        double dVxu;
+        double dPhiu;
+        double dVsu;
     };
 
     LowerStateBounds lower_state_bounds;

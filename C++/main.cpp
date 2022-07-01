@@ -78,6 +78,7 @@ int main(int argc, char** argv)
     plotter.plotRun(log,track_xy);
     plotter.plotSim(log,track_xy);
 
+    /*
     double mean_time = 0.0;
     double max_time = 0.0;
     for(MPCReturn log_i : log)
@@ -88,6 +89,7 @@ int main(int argc, char** argv)
     }
     std::cout << "mean nmpc time " << mean_time/double(jsonConfig["n_sim"]) << std::endl;
     std::cout << "max nmpc time " << max_time << std::endl;
+    */
     return 0;
 }
 

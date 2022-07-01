@@ -12,4 +12,5 @@
   "bounds_path": "/home/syscon/mpc_ws/src/cpp_mpcc/C++/Params/bounds.json",
   "track_path": "/home/syscon/mpc_ws/src/cpp_mpcc/C++/Params/track.json",
   "normalization_path": "/home/syscon/mpc_ws/src/cpp_mpcc/C++/Params/normalization.json"
+  
 }

@@ -31,6 +31,7 @@ Param::Param(std::string file){
     json jsonModel;
     iModel >> jsonModel;
     // Model Parameters
+    /* 
     Cm1 	= jsonModel["Cm1"];
     Cm2 	= jsonModel["Cm2"];
 
@@ -43,27 +44,31 @@ Param::Param(std::string file){
 
     Bf 	= jsonModel["Bf"];
     Cf 	= jsonModel["Cf"];
-    Df 	= jsonModel["Df"];
+    Df 	= jsonModel["Df"]; 
 
     m 	= jsonModel["m"];
     Iz 	= jsonModel["Iz"];
     lf 	= jsonModel["lf"];
     lr 	= jsonModel["lr"];
+    
+    g = jsonModel["g"];
+    */
 
     car_l = jsonModel["car_l"];
     car_w = jsonModel["car_w"];
-    
-    g = jsonModel["g"];
+
     //Constraint Parameters
     r_in = jsonModel["R_in"];
     r_out = jsonModel["R_out"];
 
     max_dist_proj = jsonModel["max_dist_proj"];
 
+    /* 
     e_long = jsonModel["E_long"];
     e_eps = jsonModel["E_eps"];
+    */
 
-    max_alpha = jsonModel["maxAlpha"];
+    //max_alpha = jsonModel["maxAlpha"];
     // initial warm start and trust region (model dependent)
     initial_velocity = jsonModel["initial_velocity"];
     s_trust_region = jsonModel["s_trust_region"];
@@ -132,34 +137,34 @@ BoundsParam::BoundsParam(std::string file) {
     iBounds >> jsonBounds;
 
     lower_state_bounds.X_l = jsonBounds["Xl"];
-    //lower_state_bounds.Y_l = jsonBounds["Yl"];
+    lower_state_bounds.Y_l = jsonBounds["Yl"];
     lower_state_bounds.phi_l = jsonBounds["phil"];
     lower_state_bounds.vx_l = jsonBounds["vxl"];
-    lower_state_bounds.vy_l = jsonBounds["vyl"];
-    lower_state_bounds.r_l = jsonBounds["rl"];
+    //lower_state_bounds.vy_l = jsonBounds["vyl"];
+    //lower_state_bounds.r_l = jsonBounds["rl"];
     lower_state_bounds.s_l = jsonBounds["sl"];
-    lower_state_bounds.D_l = jsonBounds["Dl"];
-    lower_state_bounds.delta_l = jsonBounds["deltal"];
+    //lower_state_bounds.D_l = jsonBounds["Dl"];
+    //lower_state_bounds.delta_l = jsonBounds["deltal"];
     lower_state_bounds.vs_l = jsonBounds["vsl"];
 
     upper_state_bounds.X_u = jsonBounds["Xu"];
     upper_state_bounds.Y_u = jsonBounds["Yu"];
     upper_state_bounds.phi_u = jsonBounds["phiu"];
     upper_state_bounds.vx_u = jsonBounds["vxu"];
-    upper_state_bounds.vy_u = jsonBounds["vyu"];
-    upper_state_bounds.r_u = jsonBounds["ru"];
+    //upper_state_bounds.vy_u = jsonBounds["vyu"];
+    //upper_state_bounds.r_u = jsonBounds["ru"];
     upper_state_bounds.s_u = jsonBounds["su"];
-    upper_state_bounds.D_u = jsonBounds["Du"];
-    upper_state_bounds.delta_u = jsonBounds["deltau"];
+    //upper_state_bounds.D_u = jsonBounds["Du"];
+    //upper_state_bounds.delta_u = jsonBounds["deltau"];
     upper_state_bounds.vs_u = jsonBounds["vsu"];
 
-    lower_input_bounds.dD_l = jsonBounds["dDl"];
-    lower_input_bounds.dDelta_l = jsonBounds["dDeltal"];
-    lower_input_bounds.dVs_l = jsonBounds["dVsl"];
+    lower_input_bounds.dVxl = jsonBounds["dVxl"];
+    lower_input_bounds.dPhil = jsonBounds["dPhil"];
+    lower_input_bounds.dVsl = jsonBounds["dVsl"];
 
-    upper_input_bounds.dD_u = jsonBounds["dDu"];
-    upper_input_bounds.dDelta_u = jsonBounds["dDeltau"];
-    upper_input_bounds.dVs_u = jsonBounds["dVsu"];
+    upper_input_bounds.dVxu = jsonBounds["dVxu"];
+    upper_input_bounds.dPhiu = jsonBounds["dPhiu"];
+    upper_input_bounds.dVsu = jsonBounds["dVsu"];
 }
 
 NormalizationParam::NormalizationParam(){

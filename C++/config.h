@@ -67,7 +67,7 @@ struct StateInputIndex{
     int phi = 2;
     int s = 3;
     int vx = 4;     // lin vel
-    int vs = 6;     // arc lenth vel
+    int vs = 5;     // arc lenth vel
 
     int dVx = 0; 
     int dPhi = 1;

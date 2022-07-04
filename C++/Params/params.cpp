@@ -113,12 +113,12 @@ CostParam::CostParam(std::string file){
     q_r_N_mult = jsonCost["qRNmult"];
 
     sc_quad_track = jsonCost["sc_quad_track"];
-    sc_quad_tire= jsonCost["sc_quad_tire"];
-    sc_quad_alpha = jsonCost["sc_quad_alpha"];
+    //sc_quad_tire= jsonCost["sc_quad_tire"];
+    //sc_quad_alpha = jsonCost["sc_quad_alpha"];
 
     sc_lin_track = jsonCost["sc_lin_track"];
-    sc_lin_tire = jsonCost["sc_lin_tire"];
-    sc_lin_alpha = jsonCost["sc_lin_alpha"];
+    //sc_lin_tire = jsonCost["sc_lin_tire"];
+    //sc_lin_alpha = jsonCost["sc_lin_alpha"];
 }
 
 BoundsParam::BoundsParam() {

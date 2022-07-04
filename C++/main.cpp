@@ -50,13 +50,13 @@ int main(int argc, char** argv)
     std::cout << testSpline() << std::endl;
     std::cout << testArcLengthSpline(json_paths) << std::endl;
 
-    std::cout << testIntegrator(json_paths) << std::endl;
-    std::cout << testLinModel(json_paths) << std::endl;
+    std::cout << "Return testIntegrator: " <<  testIntegrator(json_paths) << std::endl;
+    std::cout << "Return testTrackConstraint: " << testLinModel(json_paths) << std::endl;
     //std::cout << testAlphaConstraint(json_paths) << std::endl;
     //std::cout << testTireForceConstraint(json_paths) << std::endl;
     std::cout << testTrackConstraint(json_paths) << std::endl;
 
-    std::cout << testCost(json_paths) << std::endl;
+    std::cout << "Return cost: " << testCost(json_paths) << std::endl;
 
     Integrator integrator = Integrator(jsonConfig["Ts"],json_paths);
     Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);

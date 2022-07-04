@@ -177,7 +177,7 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
     return {Q_contouring_cost,R_MPC::Zero(),S_MPC::Zero(),q_contouring_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }
 
-CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x,int k) const
+CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x) const
 {
     // get heading of the track
     const Eigen::Vector2d dpos_ref = track.getDerivative(x.s);
@@ -185,7 +185,7 @@ CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x,int
     const double dy_ref = dpos_ref(1);
     // angle of the reference path
     double theta_ref = atan2(dy_ref,dx_ref);
-    theta_ref += 2.0*M_PI*std::round((x.phi - theta_ref)/(2.0*M_PI));
+    theta_ref = x.phi - theta_ref;
 
     // if(std::fabs(x.phi - theta_ref)>= 1.5){
     //     std::cout << "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" << std::endl;
@@ -193,9 +193,9 @@ CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x,int
 
 
     Q_MPC Q_heading_cost = Q_MPC::Zero();
-    Q_heading_cost(si_index.phi,si_index.phi) = 2.0*cost_param_.q_mu;
+    Q_heading_cost(si_index.phi,si_index.phi) = 2.0*cost_param_.q_mu * sqrt(theta_ref);
     q_MPC q_heading_cost = q_MPC::Zero();
-    q_heading_cost(si_index.phi) = -2.0*cost_param_.q_mu*theta_ref;
+    q_heading_cost(si_index.phi) = cost_param_.q_mu*theta_ref;
 
     return {Q_heading_cost,R_MPC::Zero(),S_MPC::Zero(),q_heading_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }
@@ -203,21 +203,21 @@ CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x,int
 CostMatrix Cost::getInputCost() const
 {
     // input cost and rate of chagen of real inputs
-    Q_MPC Q_input_cost = Q_MPC::Zero();
+    //Q_MPC Q_input_cost = Q_MPC::Zero();
     R_MPC R_input_cost = R_MPC::Zero();
     // cost of "real" inputs
-    Q_input_cost(si_index.phi,si_index.phi) = cost_param_.r_D;
-    Q_input_cost(si_index.vx,si_index.vx) = cost_param_.r_delta;
-    Q_input_cost(si_index.vs,si_index.vs) = cost_param_.r_vs;
+    //Q_input_cost(si_index.vx,si_index.vx) = cost_param_.r_D;
+    //Q_input_cost(si_index.phi,si_index.phi) = cost_param_.r_delta;
+    //Q_input_cost(si_index.vs,si_index.vs) = cost_param_.r_vs;
     // quadratic part
-    R_input_cost(si_index.dVx,si_index.dVx) = cost_param_.r_dD;
-    R_input_cost(si_index.dPhi,si_index.dPhi) = cost_param_.r_dDelta;
+    R_input_cost(si_index.dVx,si_index.dVx) = cost_param_.r_dVx;
+    R_input_cost(si_index.dPhi,si_index.dPhi) = cost_param_.r_dPhi;
     R_input_cost(si_index.dVs,si_index.dVs) = cost_param_.r_dVs;
     // solver interface expects 0.5 u^T R u + r^T u
-    Q_input_cost = 2.0*Q_input_cost;
+    //Q_input_cost = 2.0*Q_input_cost;
     R_input_cost = 2.0*R_input_cost;
 
-    return {Q_input_cost,R_input_cost,S_MPC::Zero(),q_MPC::Zero(),r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
+    return {Q_MPC::Zero(), R_input_cost,S_MPC::Zero(),q_MPC::Zero(),r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }
 
 CostMatrix Cost::getSoftConstraintCost() const
@@ -242,9 +242,9 @@ CostMatrix Cost::getCost(const ArcLengthSpline &track, const State &x,const int 
 {
     // generate quadratic cost function
     const CostMatrix contouring_cost = getContouringCost(track,x,k);
-    const CostMatrix heading_cost = getHeadingCost(track,x,k);
+    const CostMatrix heading_cost = getHeadingCost(track,x);
     const CostMatrix input_cost = getInputCost();
-    CostMatrix beta_cost;
+    //CostMatrix beta_cost;
     //if(cost_param_.beta_kin_cost == 1)
     //    beta_cost = getBetaKinCost(x);
     //else

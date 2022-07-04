@@ -29,10 +29,10 @@ Bounds::Bounds(BoundsParam bounds_param)
     l_bounds_x_(3) = bounds_param.lower_state_bounds.vx_l;
     //l_bounds_x_(4) = bounds_param.lower_state_bounds.vy_l;
     //l_bounds_x_(5) = bounds_param.lower_state_bounds.r_l;
-    l_bounds_x_(6) = bounds_param.lower_state_bounds.s_l;
+    l_bounds_x_(4) = bounds_param.lower_state_bounds.s_l;
     //l_bounds_x_(7) = bounds_param.lower_state_bounds.D_l;
     //l_bounds_x_(8) = bounds_param.lower_state_bounds.delta_l;
-    l_bounds_x_(9) = bounds_param.lower_state_bounds.vs_l;
+    l_bounds_x_(5) = bounds_param.lower_state_bounds.vs_l;
 
     u_bounds_x_(0) = bounds_param.upper_state_bounds.X_u;
     u_bounds_x_(1) = bounds_param.upper_state_bounds.Y_u;
@@ -40,10 +40,10 @@ Bounds::Bounds(BoundsParam bounds_param)
     u_bounds_x_(3) = bounds_param.upper_state_bounds.vx_u;
     //u_bounds_x_(4) = bounds_param.upper_state_bounds.vy_u;
     //u_bounds_x_(5) = bounds_param.upper_state_bounds.r_u;
-    u_bounds_x_(6) = bounds_param.upper_state_bounds.s_u;
+    u_bounds_x_(4) = bounds_param.upper_state_bounds.s_u;
     //u_bounds_x_(7) = bounds_param.upper_state_bounds.D_u;
     //u_bounds_x_(8) = bounds_param.upper_state_bounds.delta_u;
-    u_bounds_x_(9) = bounds_param.upper_state_bounds.vs_u;
+    u_bounds_x_(5) = bounds_param.upper_state_bounds.vs_u;
 
     l_bounds_u_(0) = bounds_param.lower_input_bounds.dVxl;
     l_bounds_u_(1) = bounds_param.lower_input_bounds.dPhil;

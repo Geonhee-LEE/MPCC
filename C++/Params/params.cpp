@@ -98,15 +98,15 @@ CostParam::CostParam(std::string file){
 
     q_r = jsonCost["qR"];
 
-    q_beta = jsonCost["qBeta"];
-    beta_kin_cost = 1;//jsonCost["betaKin"];
+    //q_beta = jsonCost["qBeta"];
+    //beta_kin_cost = 1;//jsonCost["betaKin"];
 
-    r_D = jsonCost["rD"];
-    r_delta = jsonCost["rDelta"];
-    r_vs = jsonCost["rVs"];
+    //r_D = jsonCost["rD"];
+    //r_delta = jsonCost["rDelta"];
+    //r_vs = jsonCost["rVs"];
 
-    r_dD = jsonCost["rdD"];
-    r_dDelta = jsonCost["rdDelta"];
+    r_dVx = jsonCost["rdVx"];
+    r_dPhi = jsonCost["rdPhi"];
     r_dVs = jsonCost["rdVs"];
 
     q_c_N_mult = jsonCost["qCNmult"];

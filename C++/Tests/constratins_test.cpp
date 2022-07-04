@@ -193,9 +193,9 @@ int testTrackConstraint(const PathToJson &path) {
 
     ConstrainsMatrix constraints_mat = constraints.getConstraints(track,xk0,uk0);
 
-//    std::cout << "inside track case " << dl(0) << "<=" << C.row(0)*xk0 <<  "<=" << du(0) << std::endl;
-//    std::cout << "right side case "   << dl(0) << "<=" << C.row(0)*xk1 <<  "<=" << du(0) << std::endl;
-//    std::cout << "left side case "    << dl(0) << "<=" << C.row(0)*xk2 <<  "<=" << du(0) << std::endl;
+    std::cout << "inside track case " << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk0_vec <<  "<=" << constraints_mat.du(0) << std::endl;
+    std::cout << "right side case "   << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk1_vec <<  "<=" << constraints_mat.du(0) << std::endl;
+    std::cout << "left side case "    << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk2_vec <<  "<=" << constraints_mat.du(0) << std::endl;
 
     if (!(constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk0_vec && constraints_mat.C.row(0)*xk0_vec  <= constraints_mat.du(0))){
         return  0;

@@ -90,8 +90,8 @@ public:
     double r_delta;
     double r_vs;
 
-    double r_dD;
-    double r_dDelta;
+    double r_dVx;
+    double r_dPhi;
     double r_dVs;
 
     double q_c_N_mult;

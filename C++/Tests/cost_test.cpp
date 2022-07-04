@@ -24,11 +24,21 @@ int testCost(const PathToJson &path){
 
 
     StateVector xk0_vec, xk1_vec, xk2_vec, xk3_vec, xk4_vec;
-    xk0_vec <<  1, 0, 0, 2, 0, 0, 0      , 0, 0, 0;
-    xk1_vec <<  0, 1, 0, 2, 0, 0, M_PI/2., 0, 0, 0;
-    xk2_vec << -1, 0, 0, 2, 0, 0, M_PI   , 0, 0, 0;
-    xk3_vec << -1.2, 0, 0, 2, 0, 0, M_PI , 0, 0, 0;
-    xk4_vec << -1, 0, 0, 2, 0.5, 0, M_PI , 0, 0, 0;
+    //xk0_vec <<  1, 0, 0, 2, 0, 0, 0      , 0, 0, 0;
+    xk0_vec <<  1, 0, 0, 0, 2, 0;
+    
+    //xk1_vec <<  0, 1, 0, 2, 0, 0, M_PI/2., 0, 0, 0;
+    xk1_vec <<  0, 1, 0, M_PI/2., 2, 0;
+    
+    //xk2_vec << -1, 0, 0, 2, 0, 0, M_PI   , 0, 0, 0;
+    xk2_vec << -1, 0, 0, M_PI, 2, 0;
+    
+    //xk3_vec << -1.2, 0, 0, 2, 0, 0, M_PI , 0, 0, 0;
+    xk3_vec << -1.2, 0, 0, M_PI, 2, 0;
+
+    //xk4_vec << -1, 0, 0, 2, 0.5, 0, M_PI , 0, 0, 0;
+    xk4_vec << -1, 0, 0, M_PI, 2, 0;
+
     InputVector uk0_vec, uk1_vec, uk2_vec, uk3_vec, uk4_vec;
     uk0_vec << 0, 0, 0;
     uk1_vec << 0, 0, 0;
@@ -94,7 +104,7 @@ int testCost(const PathToJson &path){
 
     // Test Beta Cost
     // does an increased slip angle increase the cost?
-    if( (0.5*xk2_vec.transpose()*cost_mat2.Q*xk2_vec + 0.5*uk2_vec.transpose()*cost_mat2.R*uk2_vec +  cost_mat2.q.transpose()*xk2_vec +  cost_mat2.r.transpose()*uk2_vec).value() >=
+    /*if( (0.5*xk2_vec.transpose()*cost_mat2.Q*xk2_vec + 0.5*uk2_vec.transpose()*cost_mat2.R*uk2_vec +  cost_mat2.q.transpose()*xk2_vec +  cost_mat2.r.transpose()*uk2_vec).value() >=
         (0.5*xk4_vec.transpose()*cost_mat2.Q*xk4_vec + 0.5*uk4_vec.transpose()*cost_mat2.R*uk4_vec +  cost_mat2.q.transpose()*xk4_vec +  cost_mat2.r.transpose()*uk4_vec).value()){
         return 10;
     }
@@ -102,7 +112,7 @@ int testCost(const PathToJson &path){
     if( (0.5*xk2_vec.transpose()*cost_mat2.Q*xk2_vec + 0.5*uk2_vec.transpose()*cost_mat2.R*uk2_vec +  cost_mat2.q.transpose()*xk2_vec +  cost_mat2.r.transpose()*uk2_vec).value() >=
         (0.5*xk4_vec.transpose()*cost_mat2.Q*xk4_vec + 0.5*uk4_vec.transpose()*cost_mat2.R*uk4_vec +  cost_mat2.q.transpose()*xk4_vec +  cost_mat2.r.transpose()*uk4_vec).value()){
         return 11;
-    }
+    }*/
 
     return 1;
 }

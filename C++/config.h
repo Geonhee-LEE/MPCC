@@ -32,8 +32,8 @@ namespace mpcc{
 #define NU 3
 
 #define NB 9 //max number of bounds
-#define NPC 3 //number of polytopic constraints
-#define NS 3 // number of soft constraints
+#define NPC 1 //number of polytopic constraints (= NS)
+#define NS 1 // number of soft constraints
 
 static constexpr int N = 30;
 static constexpr double INF = 1E5;

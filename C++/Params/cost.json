@@ -1,21 +1,21 @@
 
 {
-  "qC" : 0.1,
+  "qC" : 1000,
   "qL" : 450.0,
   "qVs" : 3.5,
 
-  "qTheta": 0.001,
+  "qTheta": 5.00,
 
   "qR" : 1E-2,
 
-  "rdVx" : 1E-5,
+  "rdVx" : 1E-1,
   "rdPhi" : 5E-3,
-  "rdVs" : 1E-5,
+  "rdVs" : 1E-1,
 
   "qCNmult": 10,
   "qRNmult": 10,
 
-  "sc_quad_track": 100.0,
+  "sc_quad_track": 10000.0,
 
-  "sc_lin_track": 10.0
+  "sc_lin_track": 100.0
 }

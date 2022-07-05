@@ -92,7 +92,6 @@ ErrorInfo Cost::getErrorInfo(const ArcLengthSpline &track,const State &x) const
     d_contouring_error(1,si_index.Y) = -std::sin(track_point.theta_ref);
     d_contouring_error(1,si_index.s) = dLagError;
 
-    //std::cout << "track_point.theta_ref: " << track_point.theta_ref << ", track_point.x_ref - X: " << track_point.x_ref - X<< ", track_point.y_ref - Y: " << track_point.y_ref - Y << std::endl;
     return {contouring_error,d_contouring_error};
 }
 /*
@@ -174,8 +173,13 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
     // progress maximization part
     q_contouring_cost(si_index.vs) = -cost_param_.q_vs;
 
-    if(k == 1)
-        std::cout << "contouring_error_zero: " << contouring_error_zero << ", lag_error_zero: " << lag_error_zero << std::endl;
+    if(k == 1){
+        const TrackPoint track_point = getRefPoint(track,x);
+        const double X = x.X;
+        const double Y = x.Y;
+        std::cout << "track_point.x_ref - X: " << track_point.x_ref - X<< ", track_point.y_ref - Y: " << track_point.y_ref - Y << ", track_point.theta_ref: " << track_point.theta_ref  << std::endl;
+        std::cout << "contouring_error: " << error_info.error(0) << ", lag_error: " << error_info.error(1) << std::endl;
+    }
     // solver interface expects 0.5 x^T Q x + q^T x
     return {Q_contouring_cost,R_MPC::Zero(),S_MPC::Zero(),q_contouring_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }

@@ -79,7 +79,7 @@ public:
     double q_l;
     double q_vs;
 
-    double q_mu;
+    double q_theta;
 
     double q_r;
 

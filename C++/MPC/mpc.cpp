@@ -255,7 +255,7 @@ MPCReturn MPC::runMPC(State &x0)
     std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     double time_nmpc = time_span.count();
 
-    return {initial_guess_[0].uk,initial_guess_,time_nmpc};
+    return {initial_guess_[0].uk, initial_guess_, time_nmpc};
 }
 
 void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y){

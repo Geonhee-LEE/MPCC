@@ -180,9 +180,9 @@ int testTrackConstraint(const PathToJson &path) {
     genRoundTrack(track);
 
     StateVector xk0_vec, xk1_vec, xk2_vec;
-    xk0_vec << 1, 0, 0, 2, 0, 0, 0, 0, 0, 0;
-    xk1_vec << 1.2, 0, 0, 2, 0, 0, 0, 0, 0, 0;
-    xk2_vec << 0.8, 0, 0, 2, 0, 0, 0, 0, 0, 0;
+    xk0_vec << 1, 0, 0, 0, 2, 0;
+    xk1_vec << 1.2, 0, 0, 0, 2, 0;
+    xk2_vec << 0.8, 0, 0, 0, 2, 0;
     InputVector uk0_vec;
     uk0_vec << 0, 0, 0;
 
@@ -198,13 +198,13 @@ int testTrackConstraint(const PathToJson &path) {
     std::cout << "left side case "    << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk2_vec <<  "<=" << constraints_mat.du(0) << std::endl;
 
     if (!(constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk0_vec && constraints_mat.C.row(0)*xk0_vec  <= constraints_mat.du(0))){
-        return  0;
+        return  2;
     }
     if (constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk1_vec && constraints_mat.C.row(0)*xk1_vec  <= constraints_mat.du(0)){
-        return  0;
+        return  3;
     }
     if (constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk2_vec && constraints_mat.C.row(0)*xk2_vec  <= constraints_mat.du(0)){
-        return  0;
+        return  4;
     }
 
     return  1;

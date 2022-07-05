@@ -136,10 +136,10 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plt::figure(4);
     plt::subplot(3,1,1);
     plt::plot(plot_dvx);
-    plt::ylabel("dot{dvx} [m/s^2]");
+    plt::ylabel("dot{vx} [m/s^2]");
     plt::subplot(3,1,2);
     plt::plot(plot_dphi);
-    plt::ylabel("dot{dphi} [rad/s]");
+    plt::ylabel("dot{phi} [rad/s]");
     plt::subplot(3,1,3);
     plt::plot(plot_dvs);
     plt::ylabel("dot{v_s} [m/s^2]");

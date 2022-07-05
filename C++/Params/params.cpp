@@ -94,7 +94,7 @@ CostParam::CostParam(std::string file){
     q_l = jsonCost["qL"];
     q_vs = jsonCost["qVs"];
 
-    q_mu = jsonCost["qMu"];
+    q_theta = jsonCost["qTheta"];
 
     q_r = jsonCost["qR"];
 

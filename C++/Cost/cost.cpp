@@ -92,6 +92,7 @@ ErrorInfo Cost::getErrorInfo(const ArcLengthSpline &track,const State &x) const
     d_contouring_error(1,si_index.Y) = -std::sin(track_point.theta_ref);
     d_contouring_error(1,si_index.s) = dLagError;
 
+    //std::cout << "track_point.theta_ref: " << track_point.theta_ref << ", track_point.x_ref - X: " << track_point.x_ref - X<< ", track_point.y_ref - Y: " << track_point.y_ref - Y << std::endl;
     return {contouring_error,d_contouring_error};
 }
 /*
@@ -173,6 +174,8 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
     // progress maximization part
     q_contouring_cost(si_index.vs) = -cost_param_.q_vs;
 
+    if(k == 1)
+        std::cout << "contouring_error_zero: " << contouring_error_zero << ", lag_error_zero: " << lag_error_zero << std::endl;
     // solver interface expects 0.5 x^T Q x + q^T x
     return {Q_contouring_cost,R_MPC::Zero(),S_MPC::Zero(),q_contouring_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }
@@ -184,18 +187,26 @@ CostMatrix Cost::getHeadingCost(const ArcLengthSpline &track, const State &x) co
     const double dx_ref = dpos_ref(0);
     const double dy_ref = dpos_ref(1);
     // angle of the reference path
-    double theta_ref = atan2(dy_ref,dx_ref);
-    theta_ref = x.phi - theta_ref;
+    double theta_ref = atan2(dy_ref, dx_ref);
+    //theta_ref = 2.0*M_PI*std::round((x.phi - theta_ref)/(2.0*M_PI));
+    double theta_error = theta_ref - x.phi;
+    //std::cout << "theta_ref: " << theta_ref << std::endl;
+
+    if (theta_error < -M_PI) 
+        theta_error = M_PI - abs(theta_error + M_PI);
+    
 
     // if(std::fabs(x.phi - theta_ref)>= 1.5){
-    //     std::cout << "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" << std::endl;
+    //     std::cout << "k" << std::endl;
     // }
 
 
     Q_MPC Q_heading_cost = Q_MPC::Zero();
-    Q_heading_cost(si_index.phi,si_index.phi) = 2.0*cost_param_.q_mu * sqrt(theta_ref);
+    //Q_heading_cost(si_index.phi,si_index.phi) = 2.0*cost_param_.q_theta;
     q_MPC q_heading_cost = q_MPC::Zero();
-    q_heading_cost(si_index.phi) = cost_param_.q_mu*theta_ref;
+    //q_heading_cost(si_index.phi) = - cost_param_.q_theta*theta_error;
+
+    //std::cout << "cost_param_.q_theta: " << cost_param_.q_theta << std::endl;
 
     return {Q_heading_cost,R_MPC::Zero(),S_MPC::Zero(),q_heading_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }

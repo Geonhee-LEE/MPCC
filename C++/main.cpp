@@ -14,8 +14,6 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#include <ros/ros.h>
-#include <ros/package.h>
 
 #include "Tests/spline_test.h"
 #include "Tests/model_integrator_test.h"
@@ -28,13 +26,21 @@
 #include "Plotting/plotting.h"
 
 #include <nlohmann/json.hpp>
+
+#include <ros/ros.h>
+#include <ros/package.h>
+#include <nav_msgs/Path.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Pose.h>
+
 using json = nlohmann::json;
 
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "MPCC");
+    ros::init(argc, argv, "model_predictive_contouring_controller");
     using namespace mpcc;
+
 
     std::string const package_path = ros::package::getPath("model_predictive_contouring_control");
     std::ifstream iConfig(package_path + "/Params/config.json");
@@ -69,8 +75,8 @@ int main(int argc, char** argv)
     return_flag = testCost(json_paths);
     std::cout << " Result of cost(): " << return_flag << std::endl;
 
-    Integrator integrator = Integrator(jsonConfig["Ts"],json_paths);
-    Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);
+    Integrator integrator = Integrator(jsonConfig["Ts"], json_paths);
+    Plotting plotter = Plotting(jsonConfig["Ts"], json_paths);
 
     Track track = Track(json_paths.track_path);
     TrackPos track_xy = track.getTrack();
@@ -87,8 +93,8 @@ int main(int argc, char** argv)
         x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
         log.push_back(mpc_sol);
     }
-    plotter.plotRun(log,track_xy);
-    plotter.plotSim(log,track_xy);
+    //plotter.plotRun(log, track_xy);
+    //plotter.plotSim(log, track_xy);
 
     double mean_time = 0.0;
     double max_time = 0.0;
@@ -101,6 +107,45 @@ int main(int argc, char** argv)
     std::cout << "mean nmpc time " << mean_time/double(jsonConfig["n_sim"]) << std::endl;
     std::cout << "max nmpc time " << max_time << std::endl;
  
+    // ROS
+    ros::NodeHandle priv_n("~");
+    ros::NodeHandle nh;
+    ros::Publisher route_planner_path_pub_ = priv_n.advertise<nav_msgs::Path>("path", 1);
+    ros::Publisher cmd_vel_pub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    nav_msgs::Path raw_path;
+    geometry_msgs::Twist cmd_vel;
+    std::vector<geometry_msgs::Twist> cmd_vel_array;
+
+    raw_path.header.frame_id = "map";
+    raw_path.header.stamp = ros::Time::now();
+    for(MPCReturn log_i : log)
+    {
+        geometry_msgs::PoseStamped track_pose;
+        track_pose.pose.position.x = log_i.mpc_horizon[0].xk.X;
+        track_pose.pose.position.y = log_i.mpc_horizon[0].xk.Y;
+        track_pose.pose.orientation.z = 1;
+        raw_path.poses.insert(raw_path.poses.end(), track_pose);
+        
+        cmd_vel.linear.x = log_i.mpc_horizon[0].xk.vx;
+        cmd_vel.angular.z = log_i.mpc_horizon[0].uk.dPhi;
+        cmd_vel_array.push_back(cmd_vel);
+    }
+
+    double ts = jsonConfig["Ts"];
+    int i = 0;
+    ros::Rate r(1.0f/ts);
+    while(ros::ok())
+    {
+        route_planner_path_pub_.publish(raw_path); // For visualization
+        cmd_vel_pub_.publish(cmd_vel_array[i]);
+
+        i++;
+        if(cmd_vel_array.size() < i)
+            break;
+        // this sleep is not necessary, the sequence is computed at 1 Hz for demonstration purposes
+        r.sleep();
+    }
+
     return 0;
 }
 

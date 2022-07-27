@@ -19,7 +19,7 @@
 
 #include "config.h"
 #include "Spline/arc_length_spline.h"
-#include "Model/model.h"
+#include "Model/bicycle_model.h"
 namespace mpcc{
 struct ConstrainsMatrix {
     // dl <= C xk + D uk <= du
@@ -50,7 +50,7 @@ private:
     OneDConstraint getAlphaConstraintFront(const State &x) const;
     C_i_MPC getAlphaConstraintFrontJac(const State &x) const;
 
-    Model model_;
+    BicycleModel model_;
     Param param_;
 };
 }

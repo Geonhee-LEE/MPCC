@@ -18,7 +18,7 @@
 namespace mpcc{
 
 Plotting::Plotting(double Ts,PathToJson path)
-:model_(Model(Ts,path)),
+:model_(BicycleModel(Ts,path)),
 param_(Param(path.param_path))
 {
 }

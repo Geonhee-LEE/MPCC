@@ -1,8 +1,37 @@
-cmake_minimum_required(VERSION 3.7)
-project(MPCC)
+cmake_minimum_required(VERSION 3.0.2)
+#cmake_minimum_required(VERSION 3.7)
+project(model_predictive_contouring_control)
+
+
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  roslib
+)
+
+find_package(PythonLibs REQUIRED)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
+find_package(PythonLibs 2.7)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-O2")
+
+catkin_package(
+  INCLUDE_DIRS
+  LIBRARIES
+    ${PROJECT_NAME}
+  CATKIN_DEPENDS
+    std_msgs
+    roscpp
+    
+)
+
 
 include_directories(.)
 include_directories(External/blasfeo/lib/include)
@@ -24,7 +53,7 @@ add_executable(MPCC
         Constraints/constraints.cpp
         Constraints/bounds.cpp
         Cost/cost.cpp
-        Model/model.cpp
+        Model/bicycle_model.cpp
         Model/integrator.cpp
         Tests/spline_test.cpp
         Tests/cost_test.cpp
@@ -34,10 +63,12 @@ add_executable(MPCC
         Params/track.cpp
         Params/track.h
         Plotting/plotting.cpp
-        Plotting/plotting.h)
+        Plotting/plotting.h
+        )
 
-find_package(Python COMPONENTS Development)
-target_include_directories(MPCC PRIVATE ${Python_INCLUDE_DIRS})
-target_link_libraries(MPCC ${Python_LIBRARIES})
+#find_package(Python COMPONENTS Development)
+#target_include_directories(MPCC PRIVATE ${Python_INCLUDE_DIRS})
 
-target_link_libraries(MPCC ${CMAKE_SOURCE_DIR}/External/hpipm/lib/lib/libhpipm.a ${CMAKE_SOURCE_DIR}/External/blasfeo/lib/lib/libblasfeo.a m)
+target_link_libraries(MPCC /home/syscon/mpc_ws/src/cpp_mpcc/C++/External/hpipm/lib/lib/libhpipm.a /home/syscon/mpc_ws/src/cpp_mpcc/C++/External/blasfeo/lib/lib/libblasfeo.a ${catkin_LIBRARIES} ${Python_LIBRARIES} )
+#target_link_libraries(MPCC ${Python_LIBRARIES})
+#target_link_libraries(MPCC ${Python_LIBRARIES} PYTHON_INCLUDE_DIRS)

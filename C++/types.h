@@ -23,12 +23,8 @@ struct State{
     double X;
     double Y;
     double phi;
-    double vx;
-    double vy;
-    double r;
     double s;
-    double D;
-    double delta;
+    double vx;
     double vs;
 
     void setZero()
@@ -36,12 +32,8 @@ struct State{
         X = 0.0;
         Y = 0.0;
         phi = 0.0;
-        vx = 0.0;
-        vy = 0.0;
-        r = 0.0;
         s = 0.0;
-        D = 0.0;
-        delta = 0.0;
+        vx = 0.0;
         vs = 0.0;
     }
 
@@ -62,22 +54,19 @@ struct State{
     {
         if(vx < vx_zero){
             vx = vx_zero;
-            vy = 0.0;
-            r = 0.0;
-            delta = 0.0;
         }
     }
 };
 
 struct Input{
-    double dD;
-    double dDelta;
+    double dVx;
+    double dPhi;
     double dVs;
 
     void setZero()
     {
-        dD = 0.0;
-        dDelta = 0.0;
+        dVx = 0.0;
+        dPhi = 0.0;
         dVs = 0.0;
     }
 };

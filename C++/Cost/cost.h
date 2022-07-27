@@ -58,10 +58,10 @@ private:
     ErrorInfo  getErrorInfo(const ArcLengthSpline &track,const State &x) const;
 
     CostMatrix getContouringCost(const ArcLengthSpline &track, const State &x,int k) const;
-    CostMatrix getHeadingCost(const ArcLengthSpline &track, const State &x,int k) const;
+    CostMatrix getHeadingCost(const ArcLengthSpline &track, const State &x) const;
     CostMatrix getInputCost() const;
-    CostMatrix getBetaCost(const State &x) const;
-    CostMatrix getBetaKinCost(const State &x) const;
+    //CostMatrix getBetaCost(const State &x) const;
+    //CostMatrix getBetaKinCost(const State &x) const;
     CostMatrix getSoftConstraintCost() const;
 
     CostParam cost_param_;

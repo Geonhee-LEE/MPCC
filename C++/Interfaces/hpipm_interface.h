@@ -102,7 +102,7 @@ private:
     double *hubx_[N+1]; //x_upper,k
     // u_lower,k <= u_k <=  u_upper,k
     // hidxbu can be used to select bounds on a subset of inputs
-    int *hidxbu_[N+1]; // hidxbuk] = {0,1,2,...,nu} for bounds on all inputs and states
+    int *hidxbu_[N+1]; // hidxbu[k] = {0,1,2,...,nu} for bounds on all inputs and states
     double *hlbu_[N+1]; // u_lower,k
     double *hubu_[N+1]; // u_upper,k
 

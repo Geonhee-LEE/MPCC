@@ -67,7 +67,7 @@ void genRoundTrack(ArcLengthSpline &track){
 //    plt::show();
 
 }
-
+/*
 int testAlphaConstraint(const PathToJson &path){
     Constraints constraints = Constraints(0.02,path);
     ArcLengthSpline track = ArcLengthSpline(path);
@@ -171,7 +171,7 @@ int testTireForceConstraint(const PathToJson &path) {
 
     return  1;
 }
-
+*/
 
 int testTrackConstraint(const PathToJson &path) {
     Constraints constraints = Constraints(0.02,path);
@@ -180,9 +180,9 @@ int testTrackConstraint(const PathToJson &path) {
     genRoundTrack(track);
 
     StateVector xk0_vec, xk1_vec, xk2_vec;
-    xk0_vec << 1, 0, 0, 2, 0, 0, 0, 0, 0, 0;
-    xk1_vec << 1.2, 0, 0, 2, 0, 0, 0, 0, 0, 0;
-    xk2_vec << 0.8, 0, 0, 2, 0, 0, 0, 0, 0, 0;
+    xk0_vec << 1, 0, 0, 0, 2, 0;
+    xk1_vec << 1.2, 0, 0, 0, 2, 0;
+    xk2_vec << 0.8, 0, 0, 0, 2, 0;
     InputVector uk0_vec;
     uk0_vec << 0, 0, 0;
 
@@ -193,18 +193,18 @@ int testTrackConstraint(const PathToJson &path) {
 
     ConstrainsMatrix constraints_mat = constraints.getConstraints(track,xk0,uk0);
 
-//    std::cout << "inside track case " << dl(0) << "<=" << C.row(0)*xk0 <<  "<=" << du(0) << std::endl;
-//    std::cout << "right side case "   << dl(0) << "<=" << C.row(0)*xk1 <<  "<=" << du(0) << std::endl;
-//    std::cout << "left side case "    << dl(0) << "<=" << C.row(0)*xk2 <<  "<=" << du(0) << std::endl;
+    std::cout << "inside track case " << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk0_vec <<  "<=" << constraints_mat.du(0) << std::endl;
+    std::cout << "right side case "   << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk1_vec <<  "<=" << constraints_mat.du(0) << std::endl;
+    std::cout << "left side case "    << constraints_mat.dl(0) << "<=" << constraints_mat.C.row(0)*xk2_vec <<  "<=" << constraints_mat.du(0) << std::endl;
 
     if (!(constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk0_vec && constraints_mat.C.row(0)*xk0_vec  <= constraints_mat.du(0))){
-        return  0;
+        return  2;
     }
     if (constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk1_vec && constraints_mat.C.row(0)*xk1_vec  <= constraints_mat.du(0)){
-        return  0;
+        return  3;
     }
     if (constraints_mat.dl(0)<= constraints_mat.C.row(0)*xk2_vec && constraints_mat.C.row(0)*xk2_vec  <= constraints_mat.du(0)){
-        return  0;
+        return  4;
     }
 
     return  1;

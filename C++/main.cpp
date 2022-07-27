@@ -14,6 +14,9 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
+#include <ros/ros.h>
+#include <ros/package.h>
+
 #include "Tests/spline_test.h"
 #include "Tests/model_integrator_test.h"
 #include "Tests/constratins_test.h"
@@ -27,10 +30,14 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-int main() {
 
+int main(int argc, char** argv)
+{
+    ros::init(argc, argv, "MPCC");
     using namespace mpcc;
-    std::ifstream iConfig("Params/config.json");
+
+    std::string const package_path = ros::package::getPath("model_predictive_contouring_control");
+    std::ifstream iConfig(package_path + "/Params/config.json");
     json jsonConfig;
     iConfig >> jsonConfig;
 
@@ -40,17 +47,27 @@ int main() {
                            jsonConfig["track_path"],
                            jsonConfig["normalization_path"]};
 
-    // std::cout << testSpline() << std::endl;
-    // std::cout << testArcLengthSpline(json_paths) << std::endl;
+    int return_flag;
 
-    // std::cout << testIntegrator(json_paths) << std::endl;
-    // std::cout << testLinModel(json_paths) << std::endl;
+    return_flag = testSpline();
+    std::cout << " Result of testSpline(): " << return_flag << std::endl;
 
-    // std::cout << testAlphaConstraint(json_paths) << std::endl;
-    // std::cout << testTireForceConstraint(json_paths) << std::endl;
-    // std::cout << testTrackConstraint(json_paths) << std::endl;
+    return_flag = testArcLengthSpline(json_paths);
+    std::cout << " Result of testArcLengthSpline(): " << return_flag << std::endl;
 
-    // std::cout << testCost(json_paths) << std::endl;
+    return_flag = testIntegrator(json_paths);
+    std::cout << " Result of testIntegrator(): " <<  return_flag << std::endl;
+
+    return_flag = testLinModel(json_paths);
+    std::cout << " Result of testLinModel(): " << return_flag << std::endl;
+    //std::cout << testAlphaConstraint(json_paths) << std::endl;
+    //std::cout << testTireForceConstraint(json_paths) << std::endl;
+
+    return_flag = testTrackConstraint(json_paths);
+    std::cout << " Result of testTrackConstraint(): " << return_flag << std::endl;
+
+    return_flag = testCost(json_paths);
+    std::cout << " Result of cost(): " << return_flag << std::endl;
 
     Integrator integrator = Integrator(jsonConfig["Ts"],json_paths);
     Plotting plotter = Plotting(jsonConfig["Ts"],json_paths);
@@ -62,11 +79,12 @@ int main() {
     MPC mpc(jsonConfig["n_sqp"],jsonConfig["n_reset"],jsonConfig["sqp_mixing"],jsonConfig["Ts"],json_paths);
     mpc.setTrack(track_xy.X,track_xy.Y);
     const double phi_0 = std::atan2(track_xy.Y(1) - track_xy.Y(0),track_xy.X(1) - track_xy.X(0));
-    State x0 = {track_xy.X(0),track_xy.Y(0),phi_0,jsonConfig["v0"],0,0,0,0.5,0,jsonConfig["v0"]};
+    State x0 = {track_xy.X(0), track_xy.Y(0), phi_0, 0, jsonConfig["v0"], 0};
+    
     for(int i=0;i<jsonConfig["n_sim"];i++)
     {
         MPCReturn mpc_sol = mpc.runMPC(x0);
-        x0 = integrator.simTimeStep(x0,mpc_sol.u0,jsonConfig["Ts"]);
+        x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
         log.push_back(mpc_sol);
     }
     plotter.plotRun(log,track_xy);
@@ -82,6 +100,7 @@ int main() {
     }
     std::cout << "mean nmpc time " << mean_time/double(jsonConfig["n_sim"]) << std::endl;
     std::cout << "max nmpc time " << max_time << std::endl;
+ 
     return 0;
 }
 

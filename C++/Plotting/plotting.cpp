@@ -37,22 +37,22 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     std::vector<double> plot_y;
     std::vector<double> plot_phi;
     std::vector<double> plot_vx;
-    std::vector<double> plot_vy;
-    std::vector<double> plot_r;
+    //std::vector<double> plot_vy;
+    //std::vector<double> plot_r;
     std::vector<double> plot_s;
-    std::vector<double> plot_d;
-    std::vector<double> plot_delta;
+    //std::vector<double> plot_d;
+    //std::vector<double> plot_delta;
     std::vector<double> plot_vs;
 
-    std::vector<double> plot_dd;
-    std::vector<double> plot_ddelta;
+    std::vector<double> plot_dvx;
+    std::vector<double> plot_dphi;
     std::vector<double> plot_dvs;
 
-    std::vector<double> plot_alpha_f;
-    std::vector<double> plot_F_rx0;
-    std::vector<double> plot_F_ry0;
-    std::vector<double> plot_F_rx1;
-    std::vector<double> plot_F_ry1;
+    //std::vector<double> plot_alpha_f;
+    //std::vector<double> plot_F_rx0;
+    //std::vector<double> plot_F_ry0;
+    //std::vector<double> plot_F_rx1;
+    //std::vector<double> plot_F_ry1;
 
     for(MPCReturn log_i : log)
     {
@@ -60,27 +60,28 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
         plot_y.push_back(log_i.mpc_horizon[0].xk.Y);
         plot_phi.push_back(log_i.mpc_horizon[0].xk.phi);
         plot_vx.push_back(log_i.mpc_horizon[0].xk.vx);
-        plot_vy.push_back(log_i.mpc_horizon[0].xk.vy);
-        plot_r.push_back(log_i.mpc_horizon[0].xk.r);
+        //plot_vy.push_back(log_i.mpc_horizon[0].xk.vy);
+        //plot_r.push_back(log_i.mpc_horizon[0].xk.r);
         plot_s.push_back(log_i.mpc_horizon[0].xk.s);
-        plot_d.push_back(log_i.mpc_horizon[0].xk.D);
-        plot_delta.push_back(log_i.mpc_horizon[0].xk.delta);
+        //plot_d.push_back(log_i.mpc_horizon[0].xk.D);
+        //plot_delta.push_back(log_i.mpc_horizon[0].xk.delta);
         plot_vs.push_back(log_i.mpc_horizon[0].xk.vs);
 
-        plot_dd.push_back(log_i.mpc_horizon[0].uk.dD);
-        plot_ddelta.push_back(log_i.mpc_horizon[0].uk.dDelta);
+        plot_dvx.push_back(log_i.mpc_horizon[0].uk.dVx);
+        plot_dphi.push_back(log_i.mpc_horizon[0].uk.dPhi);
         plot_dvs.push_back(log_i.mpc_horizon[0].uk.dVs);
 
-        double alpha_f = model_.getSlipAngleFront(log_i.mpc_horizon[0].xk);
-        TireForces F_r0 = model_.getForceRear(log_i.mpc_horizon[0].xk);
-        TireForces F_r1 = model_.getForceRear(log_i.mpc_horizon[1].xk);
-        plot_alpha_f.push_back(alpha_f);
-        plot_F_rx0.push_back(F_r0.F_x);
-        plot_F_ry0.push_back(F_r0.F_y);
-        plot_F_rx1.push_back(F_r1.F_x);
-        plot_F_ry1.push_back(F_r1.F_y);
+        //double alpha_f = model_.getSlipAngleFront(log_i.mpc_horizon[0].xk);
+        //TireForces F_r0 = model_.getForceRear(log_i.mpc_horizon[0].xk);
+        //TireForces F_r1 = model_.getForceRear(log_i.mpc_horizon[1].xk);
+        //plot_alpha_f.push_back(alpha_f);
+        //plot_F_rx0.push_back(F_r0.F_x);
+        //plot_F_ry0.push_back(F_r0.F_y);
+        //plot_F_rx1.push_back(F_r1.F_x);
+        //plot_F_ry1.push_back(F_r1.F_y);
     }
 
+    /*
     std::vector<double> plot_eps_x;
     std::vector<double> plot_eps_y;
     for(double t = 0; t<2*M_PI;t+=0.1)
@@ -88,6 +89,7 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
         plot_eps_x.push_back(cos(t)*param_.Dr*param_.e_eps);
         plot_eps_y.push_back(sin(t)*param_.Dr*1./param_.e_long*param_.e_eps);
     }
+    */
 
     plt::figure(1);
     plt::plot(plot_xc,plot_yc,"r--");
@@ -110,14 +112,15 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plt::subplot(3,2,4);
     plt::plot(plot_vx);
     plt::ylabel("v_x [m/s]");
-    plt::subplot(3,2,5);
-    plt::plot(plot_vy);
-    plt::ylabel("v_y [m/s]");
-    plt::subplot(3,2,6);
-    plt::plot(plot_r);
-    plt::ylabel("r [rad/s]");
+    //plt::subplot(3,2,5);
+    //plt::plot(plot_vy);
+    //plt::ylabel("v_y [m/s]");
+    //plt::subplot(3,2,6);
+    //plt::plot(plot_r);
+    //plt::ylabel("r [rad/s]");
 
 
+    /*
     plt::figure(3);
     plt::subplot(3,1,1);
     plt::plot(plot_d);
@@ -128,14 +131,15 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plt::subplot(3,1,3);
     plt::plot(plot_vs);
     plt::ylabel("v_s [m/s]");
+    */
 
     plt::figure(4);
     plt::subplot(3,1,1);
-    plt::plot(plot_dd);
-    plt::ylabel("dot{D} [-]");
+    plt::plot(plot_dvx);
+    plt::ylabel("dot{vx} [m/s^2]");
     plt::subplot(3,1,2);
-    plt::plot(plot_ddelta);
-    plt::ylabel("dot{delta} [rad/s]");
+    plt::plot(plot_dphi);
+    plt::ylabel("dot{phi} [rad/s]");
     plt::subplot(3,1,3);
     plt::plot(plot_dvs);
     plt::ylabel("dot{v_s} [m/s^2]");
@@ -144,6 +148,7 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plt::plot(plot_s);
     plt::ylabel("s [m]");
 
+    /*
     plt::figure(6);
     plt::subplot(1,2,1);
     plt::plot(plot_alpha_f);
@@ -155,6 +160,8 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plt::axis("equal");
     plt::xlabel("F_y [N]");
     plt::ylabel("F_x [N]");
+    */
+
     plt::show();
 
 }

@@ -27,11 +27,11 @@ Model::Model(double Ts,const PathToJson &path)
 {
 }
 
-double Model::getSlipAngleFront(const State &x) const
+/* double Model::getSlipAngleFront(const State &x) const
 {
     // compute slip angels given current state
     return -std::atan2(x.vy+x.r*param_.lf,x.vx) + x.delta;
-}
+} 
 
 double Model::getSlipAngleRear(const State &x) const
 {
@@ -134,26 +134,32 @@ FrictionForceDerivatives Model::getForceFrictionDerivatives(const State &x) cons
 {
     return {-2.0*param_.Cr2*x.vx,0.0,0.0,0.0,0.0};
 }
+*/
 
 StateVector Model::getF(const State &x,const Input &u) const
 {
     const double phi = x.phi;
     const double vx = x.vx;
-    const double vy = x.vy;
-    const double r  = x.r;
-    const double D = x.D;
-    const double delta = x.delta;
     const double vs = x.vs;
 
-    const double dD = u.dD;
-    const double dDelta = u.dDelta;
+    const double dVx = u.dVx;
+    const double dPhi = u.dPhi;
     const double dVs = u.dVs;
 
-    const TireForces tire_forces_front = getForceFront(x);
-    const TireForces tire_forces_rear  = getForceRear(x);
-    const double friction_force = getForceFriction(x);
+    //const TireForces tire_forces_front = getForceFront(x);
+    //const TireForces tire_forces_rear  = getForceRear(x);
+    //const double friction_force = getForceFriction(x);
 
     StateVector f;
+
+    f(0) = vx*std::cos(phi); 
+    f(1) = vx*std::sin(phi);
+    f(2) = dPhi;
+    f(3) = vs;
+    f(4) = dVx;
+    f(5) = dVs;
+
+    /*     
     f(0) = vx*std::cos(phi) - vy*std::sin(phi);
     f(1) = vy*std::cos(phi) + vx*std::sin(phi);
     f(2) = r;
@@ -164,6 +170,7 @@ StateVector Model::getF(const State &x,const Input &u) const
     f(7) = dD;
     f(8) = dDelta;
     f(9) = dVs;
+    */
 
     return f;
 }
@@ -174,10 +181,6 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
     // state values
     const double phi = x.phi;
     const double vx = x.vx;
-    const double vy = x.vy;
-    const double r  = x.r;
-    const double D = x.D;
-    const double delta = x.delta;
 
 //    LinModelMatrix lin_model_c;
     A_MPC A_c = A_MPC::Zero();
@@ -186,45 +189,23 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
 
     const StateVector f = getF(x,u);
 
-    const TireForces F_front = getForceFront(x);
-//    TireForces F_rear  = getForceRear(x);
-
-    const TireForcesDerivatives dF_front = getForceFrontDerivatives(x);
-    const TireForcesDerivatives dF_rear  = getForceRearDerivatives(x);
-    const FrictionForceDerivatives dF_fric = getForceFrictionDerivatives(x);
-
     // Derivatives of function
-    // f1 = v_x*std::cos(phi) - v_y*std::sin(phi)
-    const double df1_dphi = -vx*std::sin(phi) - vy*std::cos(phi);
+    // f1 = v_x*std::cos(phi)
+    const double df1_dphi = -vx*std::sin(phi);
     const double df1_dvx  = std::cos(phi);
-    const double df1_dvy  = -std::sin(phi);
 
-    // f2 = v_y*std::cos(phi) + v_x*std::sin(phi);
-    const double df2_dphi = -vy*std::sin(phi) + vx*std::cos(phi);
+    // f2 = v_x*std::sin(phi);
+    const double df2_dphi = vx*std::cos(phi);
     const double df2_dvx  = std::sin(phi);
-    const double df2_dvy  = std::cos(phi);
 
-    // f3 = r;
-    const double df3_dr = 1.0;
+    // f3 = delta phi;
 
-    // f4 = 1/param_.m*(F_rx + F_fric - F_fy*std::sin(delta) + param_.m*v_y*r);
-    const double df4_dvx     = 1.0/param_.m*(dF_rear.dF_x_vx + dF_fric.dF_f_vx - dF_front.dF_y_vx*std::sin(delta));
-    const double df4_dvy     = 1.0/param_.m*(                - dF_front.dF_y_vy*std::sin(delta)    + param_.m*r);
-    const double df4_dr      = 1.0/param_.m*(                - dF_front.dF_y_r*std::sin(delta)     + param_.m*vy);
-    const double df4_dD      = 1.0/param_.m* dF_rear.dF_x_D;
-    const double df4_ddelta  = 1.0/param_.m*(                - dF_front.dF_y_delta*std::sin(delta) - F_front.F_y*std::cos(delta));
+    // f4 = s
+    const double df4_dvs  = 1;
 
-    // f5 = 1/param_.m*(F_ry + F_fy*std::cos(delta) - param_.m*v_x*r);
-    const double df5_dvx     = 1.0/param_.m*(dF_rear.dF_y_vx  + dF_front.dF_y_vx*std::cos(delta)    - param_.m*r);
-    const double df5_dvy     = 1.0/param_.m*(dF_rear.dF_y_vy  + dF_front.dF_y_vy*std::cos(delta));
-    const double df5_dr      = 1.0/param_.m*(dF_rear.dF_y_r   + dF_front.dF_y_r*std::cos(delta)     - param_.m*vx);
-    const double df5_ddelta  = 1.0/param_.m*(                   dF_front.dF_y_delta*std::cos(delta) - F_front.F_y*std::sin(delta));
+    // f5 = delta vx
 
-    // f6 = 1/param_.Iz*(F_fy*l_f*std::cos(delta)- F_ry*l_r)
-    const double df6_dvx     = 1.0/param_.Iz*(dF_front.dF_y_vx*param_.lf*std::cos(delta)    - dF_rear.dF_y_vx*param_.lr);
-    const double df6_dvy     = 1.0/param_.Iz*(dF_front.dF_y_vy*param_.lf*std::cos(delta)    - dF_rear.dF_y_vy*param_.lr);
-    const double df6_dr      = 1.0/param_.Iz*(dF_front.dF_y_r*param_.lf*std::cos(delta)     - dF_rear.dF_y_r*param_.lr);
-    const double df6_ddelta  = 1.0/param_.Iz*(dF_front.dF_y_delta*param_.lf*std::cos(delta) - F_front.F_y*param_.lf*std::sin(delta));
+    // f6 = delta vs
 
     // Jacobians
     // Matrix A
@@ -236,40 +217,20 @@ LinModelMatrix Model::getModelJacobian(const State &x, const Input &u) const
     A_c(0,2) = df1_dphi;
     A_c(1,2) = df2_dphi;
     // Column 4
-    A_c(0,3) = df1_dvx;
-    A_c(1,3) = df2_dvx;
-    A_c(3,3) = df4_dvx;
-    A_c(4,3) = df5_dvx;
-    A_c(5,3) = df6_dvx;
-    // Column 5
-    A_c(0,4) = df1_dvy;
-    A_c(1,4) = df2_dvy;
-    A_c(3,4) = df4_dvy;
-    A_c(4,4) = df5_dvy;
-    A_c(5,4) = df6_dvy;
-    // Column 6
-    A_c(2,5) = df3_dr;
-    A_c(3,5) = df4_dr;
-    A_c(4,5) = df5_dr;
-    A_c(5,5) = df6_dr;
-    // Column 7
     // all zero
-    // Column 8
-    A_c(3,7) = df4_dD;
-    // Column 9
-    A_c(3,8) = df4_ddelta;
-    A_c(4,8) = df5_ddelta;
-    A_c(5,8) = df6_ddelta;
-    // Column 10
-    A_c(6,9) = 1.0;
+    // Column 5
+    A_c(0,4) = df1_dvx;
+    A_c(1,4) = df2_dvx;
+    // Column 6
+    A_c(3,5) = df4_dvs;
 
     // Matrix B
     // Column 1
-    B_c(7,0) = 1.0;
+    B_c(4,0) = 1.0;
     // Column 2
-    B_c(8,1) = 1.0;
+    B_c(2,1) = 1.0;
     // Column 3
-    B_c(9,2) = 1.0;
+    B_c(5,2) = 1.0;
 
     //zero order term
     g_c = f - A_c*stateToVector(x) - B_c*inputToVector(u);

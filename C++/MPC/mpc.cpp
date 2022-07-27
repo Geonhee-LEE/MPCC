@@ -70,9 +70,9 @@ void MPC::setStage(const State &xk, const Input &uk, const int time_step)
     State xk_nz = xk;
     xk_nz.vxNonZero(param_.vx_zero);
 
-    stages_[time_step].cost_mat = normalizeCost(cost_.getCost(track_,xk_nz,time_step));
-    stages_[time_step].lin_model = normalizeDynamics(model_.getLinModel(xk_nz,uk));
-    stages_[time_step].constrains_mat = normalizeCon(constraints_.getConstraints(track_,xk_nz,uk));
+    stages_[time_step].cost_mat = normalizeCost(cost_.getCost(track_, xk_nz, time_step));
+    stages_[time_step].lin_model = normalizeDynamics(model_.getLinModel(xk_nz, uk));
+    stages_[time_step].constrains_mat = normalizeCon(constraints_.getConstraints(track_, xk_nz, uk));
 
     stages_[time_step].l_bounds_x = normalization_param_.T_x_inv*bounds_.getBoundsLX();
     stages_[time_step].u_bounds_x = normalization_param_.T_x_inv*bounds_.getBoundsUX();
@@ -221,6 +221,8 @@ MPCReturn MPC::runMPC(State &x0)
     auto t1 = std::chrono::high_resolution_clock::now();
     int solver_status = -1;
     x0.s = track_.porjectOnSpline(x0);
+    std::cout << " x0.s: " << x0.s << std::endl;
+    
     x0.unwrap(track_.getLength());
     if(valid_initial_guess_)
         updateInitialGuess(x0);
@@ -255,7 +257,7 @@ MPCReturn MPC::runMPC(State &x0)
     std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     double time_nmpc = time_span.count();
 
-    return {initial_guess_[0].uk,initial_guess_,time_nmpc};
+    return {initial_guess_[0].uk, initial_guess_, time_nmpc};
 }
 
 void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y){

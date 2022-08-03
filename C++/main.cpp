@@ -35,12 +35,22 @@
 
 using json = nlohmann::json;
 
+nav_msgs::Path path_;
+
+void pathCallback(const nav_msgs::Path &path){
+
+    std::cout << " pathCallback " << std::endl;
+    path_ = path;
+}
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "model_predictive_contouring_controller");
-    using namespace mpcc;
+    ros::NodeHandle priv_n("~");
+    ros::NodeHandle nh;
+    ros::Subscriber rs_sub_ = nh.subscribe("/R_001/move_base/WaypointsGlobalPlanner/global_plan", 1, pathCallback);
 
+    using namespace mpcc;
 
     std::string const package_path = ros::package::getPath("model_predictive_contouring_control");
     std::ifstream iConfig(package_path + "/Params/config.json");
@@ -79,11 +89,26 @@ int main(int argc, char** argv)
     Plotting plotter = Plotting(jsonConfig["Ts"], json_paths);
 
     Track track = Track(json_paths.track_path);
+
+    ros::Rate wait(1.0);
+    while(path_.poses.size() == 0 && ros::ok()){
+        std::cout << " waiting for path cb" << std::endl;
+        ros::spinOnce();
+        wait.sleep();
+    }
+    std::vector<double> x, y;
+
+    for(int i = 0; i < path_.poses.size(); i++){
+        x.push_back(path_.poses[i].pose.position.x);
+        y.push_back(path_.poses[i].pose.position.y);
+    }
+    track.setTrack(x, y);
+
     TrackPos track_xy = track.getTrack();
 
     std::list<MPCReturn> log;
     MPC mpc(jsonConfig["n_sqp"],jsonConfig["n_reset"],jsonConfig["sqp_mixing"],jsonConfig["Ts"],json_paths);
-    mpc.setTrack(track_xy.X,track_xy.Y);
+    mpc.setTrack(track_xy.X, track_xy.Y);
     const double phi_0 = std::atan2(track_xy.Y(1) - track_xy.Y(0),track_xy.X(1) - track_xy.X(0));
     State x0 = {track_xy.X(0), track_xy.Y(0), phi_0, 0, jsonConfig["v0"], 0};
     
@@ -93,8 +118,8 @@ int main(int argc, char** argv)
         x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
         log.push_back(mpc_sol);
     }
-    //plotter.plotRun(log, track_xy);
-    //plotter.plotSim(log, track_xy);
+    plotter.plotRun(log, track_xy);
+    plotter.plotSim(log, track_xy);
 
     double mean_time = 0.0;
     double max_time = 0.0;
@@ -108,8 +133,6 @@ int main(int argc, char** argv)
     std::cout << "max nmpc time " << max_time << std::endl;
  
     // ROS
-    ros::NodeHandle priv_n("~");
-    ros::NodeHandle nh;
     ros::Publisher route_planner_path_pub_ = priv_n.advertise<nav_msgs::Path>("path", 1);
     ros::Publisher cmd_vel_pub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     nav_msgs::Path raw_path;

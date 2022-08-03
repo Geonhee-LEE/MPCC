@@ -121,7 +121,7 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
     if (X_original.size() != Y_original.size()){
         //error
     }
-//    std::cout << X_original << std::endl;
+    //    std::cout << X_original << std::endl;
 
     int n_points = X_original.size();
 
@@ -193,8 +193,8 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
 //    std::cout << s_approximation << std::endl;
     total_arc_length = s_approximation(s_approximation.size()-1);
 
-    CubicSpline first_spline_x,first_spline_y;
-    CubicSpline second_spline_x,second_spline_y;
+    CubicSpline first_spline_x, first_spline_y;
+    CubicSpline second_spline_x, second_spline_y;
     // 1. spline fit
     first_spline_x.genSpline(s_approximation,X,false);
     first_spline_y.genSpline(s_approximation,Y,false);

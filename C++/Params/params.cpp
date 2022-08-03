@@ -96,7 +96,7 @@ CostParam::CostParam(std::string file){
 
     q_theta = jsonCost["qTheta"];
 
-    q_r = jsonCost["qR"];
+    //q_r = jsonCost["qR"];
 
     //q_beta = jsonCost["qBeta"];
     //beta_kin_cost = 1;//jsonCost["betaKin"];

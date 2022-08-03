@@ -167,11 +167,11 @@ void CubicSpline::genSpline(const Eigen::VectorXd &x_in,const Eigen::VectorXd &y
     if(is_regular)
     {
         double delta_x = x_in(1) - x_in(0);
-        setRegularData(x_in,y_in,delta_x);
+        setRegularData(x_in, y_in, delta_x);
     }
     else
     {
-        setData(x_in,y_in);
+        setData(x_in, y_in);
     }
     // given data compute spline parameters
 

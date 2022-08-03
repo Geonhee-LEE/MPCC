@@ -3,8 +3,8 @@
   "n_sqp": 2,
   "n_reset": 5,
   "sqp_mixing" : 0.8,
-  "n_sim": 400,
-  "Ts": 0.02,
+  "n_sim": 1000,
+  "Ts": 0.1,
   "v0": 0.2,
   
   "model_path": "/home/syscon/mpc_ws/src/cpp_mpcc/C++/Params/model.json",

@@ -178,7 +178,7 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
     q_contouring_cost(si_index.vs) = -cost_param_.q_vs;
 
     // DEBUG
-    if(k == N-1){
+    /*if(k == N-1){
         std::cout << "ContouringCost: " << std::endl;
         std::cout << std::setprecision(6); 
         std::cout << "[";
@@ -192,7 +192,7 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
         std::cout << "[Track] x_ref - X: " << track_point.x_ref - X<< ", y_ref - Y: " << track_point.y_ref - Y << ", theta_ref: " << track_point.theta_ref  << std::endl;
         std::cout << "contouring_error: " << error_info.error(0) << ", lag_error: " << error_info.error(1) << std::endl;
         std::cout << "contouring_error_zero: " << contouring_error_zero << ", lag_error_zero: " << lag_error_zero << std::endl;
-    }
+    }*/
     // solver interface expects 0.5 x^T Q x + q^T x
     return {Q_contouring_cost,R_MPC::Zero(),S_MPC::Zero(),q_contouring_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }

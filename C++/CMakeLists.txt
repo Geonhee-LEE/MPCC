@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   roslib
+  syscon_msgs
 )
 
 find_package(PythonLibs REQUIRED)
@@ -29,7 +30,7 @@ catkin_package(
   CATKIN_DEPENDS
     std_msgs
     roscpp
-    
+    syscon_msgs
 )
 
 

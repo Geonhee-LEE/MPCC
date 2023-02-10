@@ -30,7 +30,7 @@ int testSpline() {
     int NV = 100;   //number of validation points
     x.setLinSpaced(NT,0,2*M_PI);
     y.setZero(NT,1);
-//    std::cout << x.size() << std::endl;
+    //std::cout << x.size() << std::endl;
     //set y ot cos(x)
     for(int i=0;i<x.size();i++){
         y(i) = std::cos(x(i));
@@ -143,40 +143,40 @@ int testArcLengthSpline(const PathToJson &path){
         return 0;
 
     //    ArcLengthSpline two_d_spline;
-//    two_d_spline.gen2DSpline(track_xy.X,track_xy.Y);
-//    Eigen::VectorXd s;
-//    s.setLinSpaced(1000,0,two_d_spline.getLength());
-//    Eigen::Vector2d pos;
-//    std::vector<double> plot_x;
-//    std::vector<double> plot_y;
-//    std::vector<double> kappa;
-//    for(int i=0;i<1000;i++){
-//        std::cout << s(i) << std::endl;
-//        pos = two_d_spline.getPostion(s(i));
-//        plot_x.push_back(pos(0));
-//        plot_y.push_back(pos(1));
-//        // reference path derivatives
-//        const Eigen::Vector2d dpos_ref = two_d_spline.getDerivative(s(i));
-//        const double dx_ref = dpos_ref(0);
-//        const double dy_ref = dpos_ref(1);
-//        // angle of the reference path
-//        const double theta_ref = atan2(dy_ref,dx_ref);
-//        // second order derivatives
-//        Eigen::Vector2d ddpos_ref = two_d_spline.getSecondDerivative(s(i));
-//        const double ddx_ref = ddpos_ref(0);
-//        const double ddy_ref = ddpos_ref(1);
-//        // curvature
-//        double dtheta_ref = 0.0;
-//        if(std::abs(ddx_ref*ddx_ref + ddy_ref*ddy_ref)>= 1e0){
-//            dtheta_ref = (dx_ref*ddy_ref - dy_ref*ddx_ref)
-//                         /(ddx_ref*ddx_ref + ddy_ref*ddy_ref); //curvature
-//        }
-//        kappa.push_back(dtheta_ref);
-//    }
-//    plt::plot(plot_x,plot_y);
-//    plt::show();
-//
-//    plt::plot(kappa);
-//    plt::show();
+    //    two_d_spline.gen2DSpline(track_xy.X,track_xy.Y);
+    //    Eigen::VectorXd s;
+    //    s.setLinSpaced(1000,0,two_d_spline.getLength());
+    //    Eigen::Vector2d pos;
+    //    std::vector<double> plot_x;
+    //    std::vector<double> plot_y;
+    //    std::vector<double> kappa;
+    //    for(int i=0;i<1000;i++){
+    //        std::cout << s(i) << std::endl;
+    //        pos = two_d_spline.getPostion(s(i));
+    //        plot_x.push_back(pos(0));
+    //        plot_y.push_back(pos(1));
+    //        // reference path derivatives
+    //        const Eigen::Vector2d dpos_ref = two_d_spline.getDerivative(s(i));
+    //        const double dx_ref = dpos_ref(0);
+    //        const double dy_ref = dpos_ref(1);
+    //        // angle of the reference path
+    //        const double theta_ref = atan2(dy_ref,dx_ref);
+    //        // second order derivatives
+    //        Eigen::Vector2d ddpos_ref = two_d_spline.getSecondDerivative(s(i));
+    //        const double ddx_ref = ddpos_ref(0);
+    //        const double ddy_ref = ddpos_ref(1);
+    //        // curvature
+    //        double dtheta_ref = 0.0;
+    //        if(std::abs(ddx_ref*ddx_ref + ddy_ref*ddy_ref)>= 1e0){
+    //            dtheta_ref = (dx_ref*ddy_ref - dy_ref*ddx_ref)
+    //                         /(ddx_ref*ddx_ref + ddy_ref*ddy_ref); //curvature
+    //        }
+    //        kappa.push_back(dtheta_ref);
+    //    }
+    //    plt::plot(plot_x,plot_y);
+    //    plt::show();
+    //
+    //    plt::plot(kappa);
+    //    plt::show();
 }
 }

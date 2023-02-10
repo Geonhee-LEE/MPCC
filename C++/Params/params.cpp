@@ -73,7 +73,6 @@ Param::Param(std::string file){
     initial_velocity = jsonModel["initial_velocity"];
     s_trust_region = jsonModel["s_trust_region"];
 
-    vx_zero = jsonModel["vx_zero"];
 }
 
 CostParam::CostParam(){
@@ -94,9 +93,7 @@ CostParam::CostParam(std::string file){
     q_l = jsonCost["qL"];
     q_vs = jsonCost["qVs"];
 
-    q_theta = jsonCost["qTheta"];
-
-    q_r = jsonCost["qR"];
+    //q_r = jsonCost["qR"];
 
     //q_beta = jsonCost["qBeta"];
     //beta_kin_cost = 1;//jsonCost["betaKin"];

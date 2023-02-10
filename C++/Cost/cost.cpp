@@ -67,12 +67,15 @@ ErrorInfo Cost::getErrorInfo(const ArcLengthSpline &track,const State &x) const
     const TrackPoint track_point = getRefPoint(track,x);
     // contouring  error
     Eigen::Matrix<double,1,2> contouring_error;
-    contouring_error(0) = -std::sin(track_point.theta_ref)*(track_point.x_ref - X) +
-                           std::cos(track_point.theta_ref)*(track_point.y_ref - Y);
+    contouring_error(0) =  std::sin(track_point.theta_ref)*(X - track_point.x_ref) -
+                           std::cos(track_point.theta_ref)*(Y - track_point.y_ref); // https://www.notion.so/geonhee-lee/Autonomous-driving-using-Model-Predictive-Control-methods-MSc-Thesis-2017-c9997f2e73634bd7906bbb43a6bfba98#17a097b7d06241939416b6797c2a3c0f
     // lag error
-    contouring_error(1) =  std::cos(track_point.theta_ref)*(track_point.x_ref - X) +
-                           std::sin(track_point.theta_ref)*(track_point.y_ref - Y);
-    // partial derivatives of the lag and contouring error with respect to s
+    contouring_error(1) =  - std::cos(track_point.theta_ref)*(X - track_point.x_ref) -
+                           std::sin(track_point.theta_ref)*(Y - track_point.y_ref); // https://www.notion.so/geonhee-lee/Autonomous-driving-using-Model-Predictive-Control-methods-MSc-Thesis-2017-c9997f2e73634bd7906bbb43a6bfba98#5e3f16e2c26641128eabe14a649a4dc1
+    
+    // partial derivatives of the lag and contouring error with respect to s(theta_ref)
+    Eigen::Matrix<double,2,NX> d_contouring_error = Eigen::Matrix<double,2,NX>::Zero();
+
     const double dContouringError = - track_point.dtheta_ref*std::cos(track_point.theta_ref)*(track_point.x_ref - X)
                                     - track_point.dtheta_ref*std::sin(track_point.theta_ref)*(track_point.y_ref - Y)
                                     - track_point.dx_ref*std::sin(track_point.theta_ref)
@@ -82,15 +85,14 @@ ErrorInfo Cost::getErrorInfo(const ArcLengthSpline &track,const State &x) const
                                     + track_point.dx_ref*std::cos(track_point.theta_ref)
                                     + track_point.dy_ref*std::sin(track_point.theta_ref);
 
-    Eigen::Matrix<double,2,NX> d_contouring_error = Eigen::Matrix<double,2,NX>::Zero();
     // compute all remaining partial derivatives and store the in dError
-    d_contouring_error(0,si_index.X) =  std::sin(track_point.theta_ref);
-    d_contouring_error(0,si_index.Y) = -std::cos(track_point.theta_ref);
-    d_contouring_error(0,si_index.s) = dContouringError;
+    d_contouring_error(0,si_index.X) =  std::sin(track_point.theta_ref); // dControuring_err / dX
+    d_contouring_error(0,si_index.Y) = -std::cos(track_point.theta_ref); // dControuring_err / dY
+    d_contouring_error(0,si_index.s) = dContouringError;  // dControuring_err / ds
 
-    d_contouring_error(1,si_index.X) = -std::cos(track_point.theta_ref);
-    d_contouring_error(1,si_index.Y) = -std::sin(track_point.theta_ref);
-    d_contouring_error(1,si_index.s) = dLagError;
+    d_contouring_error(1,si_index.X) = -std::cos(track_point.theta_ref);    // dLag_err / dX
+    d_contouring_error(1,si_index.Y) = -std::sin(track_point.theta_ref);    // dLag_err / dY
+    d_contouring_error(1,si_index.s) = dLagError;   // dLag_err / ds
 
     return {contouring_error,d_contouring_error};
 }
@@ -168,18 +170,29 @@ CostMatrix Cost::getContouringCost(const ArcLengthSpline &track, const State &x,
     //Q_contouring_cost(si_index.r, si_index.r) = k < N ? cost_param_.q_r : cost_param_.q_r_N_mult * cost_param_.q_r;
     Q_contouring_cost = 2.0*Q_contouring_cost;
 
+
     q_contouring_cost = ContouringCost(0)*2.0*contouring_error_zero*d_contouring_error.transpose() +
                         ContouringCost(1)*2.0*lag_error_zero*d_lag_error.transpose();
+    
     // progress maximization part
     q_contouring_cost(si_index.vs) = -cost_param_.q_vs;
 
-    if(k == 1){
+    // DEBUG
+    /*if(k == N-1){
+        std::cout << "ContouringCost: " << std::endl;
+        std::cout << std::setprecision(6); 
+        std::cout << "[";
+        for(int i = 0; i < Q_contouring_cost.cols(); i++)
+            std::cout << " [ " << Q_contouring_cost.row(i) << " ] " << std::endl;
+        std::cout << "]" << std::endl;
+        
         const TrackPoint track_point = getRefPoint(track,x);
         const double X = x.X;
         const double Y = x.Y;
-        std::cout << "track_point.x_ref - X: " << track_point.x_ref - X<< ", track_point.y_ref - Y: " << track_point.y_ref - Y << ", track_point.theta_ref: " << track_point.theta_ref  << std::endl;
+        std::cout << "[Track] x_ref - X: " << track_point.x_ref - X<< ", y_ref - Y: " << track_point.y_ref - Y << ", theta_ref: " << track_point.theta_ref  << std::endl;
         std::cout << "contouring_error: " << error_info.error(0) << ", lag_error: " << error_info.error(1) << std::endl;
-    }
+        std::cout << "contouring_error_zero: " << contouring_error_zero << ", lag_error_zero: " << lag_error_zero << std::endl;
+    }*/
     // solver interface expects 0.5 x^T Q x + q^T x
     return {Q_contouring_cost,R_MPC::Zero(),S_MPC::Zero(),q_contouring_cost,r_MPC::Zero(),Z_MPC::Zero(),z_MPC::Zero()};
 }
@@ -257,7 +270,7 @@ CostMatrix Cost::getCost(const ArcLengthSpline &track, const State &x,const int 
 {
     // generate quadratic cost function
     const CostMatrix contouring_cost = getContouringCost(track,x,k);
-    const CostMatrix heading_cost = getHeadingCost(track,x);
+    //const CostMatrix heading_cost = getHeadingCost(track,x);
     const CostMatrix input_cost = getInputCost();
     //CostMatrix beta_cost;
     //if(cost_param_.beta_kin_cost == 1)
@@ -266,13 +279,23 @@ CostMatrix Cost::getCost(const ArcLengthSpline &track, const State &x,const int 
     //    beta_cost = getBetaCost(x);
     const CostMatrix soft_con_cost = getSoftConstraintCost();
 
-    Q_MPC Q_not_sym = contouring_cost.Q + heading_cost.Q + input_cost.Q; // + beta_cost.Q;
+    Q_MPC Q_not_sym = contouring_cost.Q + input_cost.Q; // + heading_cost.Q + beta_cost.Q;
     Q_MPC Q_reg = 1e-9*Q_MPC::Identity();
 
+    /* 
+    std::cout << "Num(Q_MPC.cols): " << Q_not_sym.cols() << std::endl;
+    std::cout << "Num(Q_MPC.rows): " << Q_not_sym.rows() << std::endl;
+    
+    std::cout << "[";
+    for(int i = 0; i < Q_not_sym.cols(); i++)
+        std::cout << " [ " << Q_not_sym.row(i) << " ] " << std::endl;
+    std::cout << "]" << std::endl; 
+    */
+    
     const Q_MPC Q = 0.5*(Q_not_sym.transpose()+Q_not_sym);// + Q_reg;//contouring_cost.Q + input_cost.Q + beta_cost.Q;
-    const R_MPC R = contouring_cost.R + heading_cost.R + input_cost.R; // + beta_cost.R;
-    const q_MPC q = contouring_cost.q + heading_cost.q + input_cost.q; // + beta_cost.q;
-    const r_MPC r = contouring_cost.r + heading_cost.r + input_cost.r; // + beta_cost.r;
+    const R_MPC R = contouring_cost.R + input_cost.R; // + heading_cost.R + beta_cost.R;
+    const q_MPC q = contouring_cost.q + input_cost.q; // + heading_cost.q + beta_cost.q;
+    const r_MPC r = contouring_cost.r + input_cost.r; // + heading_cost.r + beta_cost.r;
     const Z_MPC Z = soft_con_cost.Z;
     const z_MPC z = soft_con_cost.z;
 
